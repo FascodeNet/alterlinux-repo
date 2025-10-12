@@ -3,11 +3,11 @@
 
 pkgname=alterlinux-fcitx-conf
 pkgver=1.1
-pkgrel=2
+pkgrel=3
 pkgdesc='AlterLinux fcitx Settings'
 arch=('any')
 url='https:/fascode.net'
-source=("https://github.com/SereneTeam/${pkgname}/archive/v${pkgver}.zip")
+source=("https://github.com/FascodeNet/${pkgname}/archive/v${pkgver}.zip")
 conflicts=("alterlinux-fcitx-conf-git")
 sha256sums=('SKIP')
 

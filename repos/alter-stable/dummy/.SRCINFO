@@ -1,8 +1,0 @@
-pkgbase = dummy
-	pkgdesc = Dummy package.
-	pkgver = 1.0
-	pkgrel = 1
-	url = https:/fascode.net
-	arch = any
-
-pkgname = dummy

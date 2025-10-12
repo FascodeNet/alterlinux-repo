@@ -1,0 +1,3 @@
+[submodule "alterlinux/alterlinux-filesystem"]
+	path = alterlinux/alterlinux-filesystem
+	url = https://github.com/FascodeNet/alterlinux-filesystem.git
