@@ -1,3 +1,6 @@
 [submodule "alterlinux/alterlinux-filesystem"]
 	path = alterlinux/alterlinux-filesystem
 	url = https://github.com/FascodeNet/alterlinux-filesystem.git
+[submodule "extern/alterlinux-wallpapers"]
+	path = extern/alterlinux-wallpapers
+	url = https://github.com/FascodeNet/alterlinux-wallpapers.git
