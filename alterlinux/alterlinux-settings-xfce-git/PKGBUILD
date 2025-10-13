@@ -1,0 +1,20 @@
+# Maintainer : Yamada Hayao <shun819.mail@gmail.com>
+
+_pkgname=alterlinux-settings-xfce
+pkgname=$_pkgname-git
+pkgver=1.0
+pkgrel=1
+pkgdesc='AlterLinux xfce Settings'
+arch=('any')
+url='https:/fascode.net'
+source=("git+https://github.com/FascodeNet/${_pkgname}.git")
+conflicts=("${_pkgname}")
+provides=("${_pkgname}")
+sha256sums=('SKIP')
+
+
+package () {
+    # local _skeldir="${pkgdir}/etc/"
+	cp -r "$srcdir/$_pkgname/skel" "$pkgdir/etc/"
+
+}

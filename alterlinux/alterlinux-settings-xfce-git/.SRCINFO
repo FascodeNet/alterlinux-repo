@@ -1,0 +1,12 @@
+pkgbase = alterlinux-settings-xfce-git
+	pkgdesc = AlterLinux xfce Settings
+	pkgver = 1.0
+	pkgrel = 1
+	url = https:/fascode.net
+	arch = any
+	provides = alterlinux-settings-xfce
+	conflicts = alterlinux-settings-xfce
+	source = git+https://github.com/FascodeNet/alterlinux-settings-xfce.git
+	sha256sums = SKIP
+
+pkgname = alterlinux-settings-xfce-git
