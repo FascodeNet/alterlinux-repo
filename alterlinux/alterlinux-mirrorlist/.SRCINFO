@@ -1,10 +1,17 @@
 pkgbase = alterlinux-mirrorlist
 	pkgdesc = AlterLinux repository mirrorlists
-	pkgver = 20211010
+	pkgver = 20220323
 	pkgrel = 1
 	url = https:/fascode.net
 	arch = any
+	backup = etc/pacman.d/mirrorlist-alter
 	source = mirrorlist-alter
+	source = alterlinux-mirrorlist-update
+	source = alterlinux-mirrorlist.service
+	source = https://github.com/Hayao0819/FasBashLib/releases/download/v0.1.3/fasbashlib.sh
+	sha256sums = 4bb31a0c4569ffa82642a118beb2a513163937fb33b46970d545de98e731ab69
 	sha256sums = SKIP
+	sha256sums = f3e8e33f64b11020553334ef59e17e120f04fa0f8c2e1ac4956618b3c149f0d3
+	sha256sums = 1d28a30b19b1b3bce2ed1cbc471105ce63c27ed807f475c024d38d2fc2197368
 
 pkgname = alterlinux-mirrorlist

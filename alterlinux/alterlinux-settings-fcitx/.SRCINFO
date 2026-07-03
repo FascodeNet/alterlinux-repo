@@ -1,11 +1,11 @@
-pkgbase = alterlinux-fcitx-conf
+pkgbase = alterlinux-settings-fcitx
 	pkgdesc = AlterLinux fcitx Settings
 	pkgver = 1.1
-	pkgrel = 2
+	pkgrel = 3
 	url = https:/fascode.net
 	arch = any
 	conflicts = alterlinux-fcitx-conf-git
-	source = https://github.com/SereneTeam/alterlinux-fcitx-conf/archive/v1.1.zip
+	source = https://github.com/FascodeNet/alterlinux-settings-fcitx/archive/v1.1.zip
 	sha256sums = SKIP
 
-pkgname = alterlinux-fcitx-conf
+pkgname = alterlinux-settings-fcitx

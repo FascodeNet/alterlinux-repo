@@ -1,11 +1,12 @@
 pkgbase = alterlinux-keyring
 	pkgdesc = AlterLinux PGP keyring
 	pkgver = 20201117
-	pkgrel = 1
+	pkgrel = 2
 	url = https:/fascode.net
 	install = alterlinux-keyring.install
 	arch = any
 	license = GPL
+	makedepends = git
 	source = git+https://github.com/FascodeNet/alterlinux-keyring.git
 	validpgpkeys = BDC396346243AB57ACD090F9F50544048389DA36
 	sha256sums = SKIP
