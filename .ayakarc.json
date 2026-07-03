@@ -1,4 +1,8 @@
 {
-    "repodir": "./alterlinux",
-    "destdir": "./out"
+    "repos": [
+        {
+            "dir": "./alterlinux",
+            "destdir": "./out"
+        }
+    ]
 }
