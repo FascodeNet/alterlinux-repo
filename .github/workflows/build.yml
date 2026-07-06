@@ -60,7 +60,7 @@ jobs:
           fi
       - name: Upload to ayato
         if: steps.build.outputs.built == 'true'
-        uses: Hayao0819/Kamisato/actions/upload@main
+        uses: Hayao0819/Kamisato/actions/upload@master
         with:
           server: ${{ vars.AYATO_URL }}
           repo: alterlinux
