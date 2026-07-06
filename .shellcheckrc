@@ -7,4 +7,5 @@ disable=SC2034
 disable=SC2294
 disable=SC2288
 disable=SC1113
+disable=SC2329
 source-path=SCRIPTDIR
