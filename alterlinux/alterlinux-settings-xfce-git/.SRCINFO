@@ -4,6 +4,7 @@ pkgbase = alterlinux-settings-xfce-git
 	pkgrel = 1
 	url = https:/fascode.net
 	arch = any
+	makedepends = git
 	provides = alterlinux-settings-xfce
 	conflicts = alterlinux-settings-xfce
 	source = git+https://github.com/FascodeNet/alterlinux-settings-xfce.git

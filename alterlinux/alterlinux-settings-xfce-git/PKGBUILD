@@ -7,6 +7,7 @@ pkgrel=1
 pkgdesc='AlterLinux xfce Settings'
 arch=('any')
 url='https:/fascode.net'
+makedepends=('git')
 source=("git+https://github.com/FascodeNet/${_pkgname}.git")
 conflicts=("${_pkgname}")
 provides=("${_pkgname}")
