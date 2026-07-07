@@ -3,6 +3,10 @@
         {
             "dir": "./alterlinux",
             "destdir": "./out"
+        },
+        {
+            "dir": "./alterlinux-aur",
+            "destdir": "./out"
         }
     ]
 }

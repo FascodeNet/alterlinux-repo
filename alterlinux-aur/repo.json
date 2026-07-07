@@ -1,0 +1,11 @@
+{
+    "name": "alterlinux-aur",
+    "maintainer": "hayao <shun819.mail at gmail.com>",
+    "build": {
+        "archbuild": "alterlinux-x86_64-build"
+    },
+    "installpkgs": {
+        "files": [],
+        "names": []
+    }
+}

@@ -3,7 +3,7 @@ name: Build and publish
 on:
   push:
     branches: [master]
-    paths: ["alterlinux/**"]
+    paths: ["alterlinux/**", "alterlinux-aur/**"]
   workflow_dispatch:
     inputs:
       packages:
@@ -22,6 +22,14 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repo: alterlinux
+            arch: x86_64
+          - repo: alterlinux-aur
+            arch: x86_64
     steps:
       - uses: actions/checkout@v5
         with:
@@ -38,22 +46,22 @@ jobs:
         id: build
         env:
           API_SERVER: ${{ vars.AYATO_URL }}
-          REPO_URL: ${{ vars.AYATO_REPO_URL }}
           PACKAGES: ${{ github.event.inputs.packages }}
           ALL: ${{ github.event.inputs.all }}
+          REPO: ${{ matrix.repo }}
+          ARCH: ${{ matrix.arch }}
         run: |
           # --diff compares local pkgver against the remote pacman db, so it needs
-          # the db directory URL (.../repo/<repo>/<arch>), not the API base used for
-          # uploads. Fall back to the standard ayato route when the var is unset.
-          diff_server="${REPO_URL:-${API_SERVER%/}/repo/alterlinux/x86_64}"
+          # the db directory URL (.../repo/<repo>/<arch>), derived per repo/arch.
+          diff_server="${API_SERVER%/}/repo/$REPO/$ARCH"
           if [ "$ALL" = "true" ]; then
-            ayaka build alterlinux --executor container
+            ayaka build "$REPO" --arch "$ARCH" --executor container
           elif [ -n "$PACKAGES" ]; then
-            ayaka build alterlinux $PACKAGES --executor container
+            ayaka build "$REPO" $PACKAGES --arch "$ARCH" --executor container
           else
-            ayaka build alterlinux --diff --executor container --server "$diff_server"
+            ayaka build "$REPO" --diff --arch "$ARCH" --executor container --server "$diff_server"
           fi
-          if [ -n "$(find out/alterlinux -name '*.pkg.tar.*' -print -quit 2>/dev/null)" ]; then
+          if [ -n "$(find "out/$REPO" -name '*.pkg.tar.*' -print -quit 2>/dev/null)" ]; then
             echo "built=true" >>"$GITHUB_OUTPUT"
           else
             echo "built=false" >>"$GITHUB_OUTPUT"
@@ -64,6 +72,6 @@ jobs:
         uses: Hayao0819/Kamisato/actions/upload@master
         with:
           server: ${{ vars.AYATO_URL }}
-          repo: alterlinux
-          files: out/alterlinux/**/*.pkg.tar.*
+          repo: ${{ matrix.repo }}
+          files: out/${{ matrix.repo }}/**/*.pkg.tar.*
           api_key: ${{ secrets.AYATO_TOKEN }}
