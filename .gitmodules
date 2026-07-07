@@ -4,3 +4,6 @@
 [submodule "extern/alterlinux-wallpapers"]
 	path = extern/alterlinux-wallpapers
 	url = https://github.com/FascodeNet/alterlinux-wallpapers.git
+[submodule "alterlinux/ckbcomp"]
+	path = alterlinux/ckbcomp
+	url = https://aur.archlinux.org/ckbcomp.git
