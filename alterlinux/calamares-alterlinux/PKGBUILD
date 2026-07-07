@@ -1,0 +1,106 @@
+# Maintainer: Yamada Hayao <development@fascode.net>
+
+pkgname=calamares-alterlinux
+_calamares_ver=3.4.2
+pkgver=3.4.2.r213.6dfe79e
+pkgrel=1
+pkgdesc="Calamares installer bundled with AlterLinux branding, configuration and modules"
+arch=('x86_64')
+url="https://github.com/FascodeNet/calamares-extensions"
+license=('GPL-3.0-or-later')
+depends=(
+    # Calamares runtime
+    'kcoreaddons'
+    'kpmcore'
+    'libpwquality'
+    'qt6-declarative'
+    'qt6-svg'
+    'yaml-cpp'
+    'python'
+    # Runtime tools used by the modules AlterLinux enables
+    'squashfs-tools'
+    'ckbcomp'
+    'polkit'
+)
+makedepends=(
+    'extra-cmake-modules'
+    'libglvnd'
+    'ninja'
+    'qt6-tools'
+    'qt6-translations'
+    'python'
+    'git'
+)
+provides=('calamares')
+conflicts=('calamares' 'alterlinux-calamares')
+
+_extname="calamares-extensions"
+_srcdir="calamares-${_calamares_ver}"
+source=(
+    "${_srcdir}.tar.gz::https://codeberg.org/Calamares/calamares/releases/download/v${_calamares_ver}/${_srcdir}.tar.gz"
+    "git+https://github.com/FascodeNet/${_extname}.git"
+)
+sha256sums=(
+    '733bbbb00dc9f84874bd5c22960952f317ea2537565431179fa2152b2fbfdccc'
+    'SKIP'
+)
+
+pkgver() {
+    cd "${srcdir}/${_extname}"
+    printf "%s.r%s.%s" "${_calamares_ver}" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+    # Modules AlterLinux does not use; keeps the build lean.
+    local _skip_modules=(
+        dracut dracutlukscfg
+        dummycpp dummyprocess dummypython dummypythonqt
+        initramfs initramfscfg
+        interactiveterminal
+        packagechooser packagechooserq
+        services-openrc
+    )
+
+    cmake -B build -S "${srcdir}/${_srcdir}" -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DWITH_QT6=ON \
+        -DWITH_PYTHON=ON \
+        -DINSTALL_CONFIG=ON \
+        -DSKIP_MODULES="${_skip_modules[*]}" \
+        -DBUILD_TESTING=OFF \
+        -DKDE_INSTALL_SYSCONFDIR=/etc \
+        -Wno-dev
+    cmake --build build
+}
+
+package() {
+    local _ext="${srcdir}/${_extname}"
+
+    # 1) Calamares body + upstream default module configuration
+    #    (INSTALL_CONFIG=ON installs defaults under /usr/share/calamares/*)
+    DESTDIR="${pkgdir}" cmake --install build
+
+    # 2) AlterLinux branding (data only: branding.desc, show.qml, fonts, lang, ...)
+    install -d "${pkgdir}/usr/share/calamares/branding"
+    cp -r "${_ext}/branding/alter" "${pkgdir}/usr/share/calamares/branding/alter"
+
+    # 3) postcfg module (Python job, no compilation)
+    install -d "${pkgdir}/usr/lib/calamares/modules"
+    cp -r "${_ext}/modules/postcfg" "${pkgdir}/usr/lib/calamares/modules/postcfg"
+
+    # 4) AlterLinux configuration overrides in /etc (takes precedence over /usr/share)
+    install -Dm644 "${_ext}/settings.conf" "${pkgdir}/etc/calamares/settings.conf"
+    for _conf in "${_ext}/module-conf/"*.conf; do
+        install -Dm644 "${_conf}" "${pkgdir}/etc/calamares/modules/$(basename "${_conf}")"
+    done
+
+    # 5) Supporting data
+    install -Dm755 "${_ext}/data/run-scripts" "${pkgdir}/etc/calamares/run-scripts"
+    install -Dm644 "${_ext}/data/alter-icon.svg" \
+        "${pkgdir}/usr/share/icons/hicolor/scalable/apps/calamares-alterlinux.svg"
+    install -Dm644 "${_ext}/data/49-nopasswd-calamares.rules" \
+        "${pkgdir}/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
+    chmod 750 "${pkgdir}/etc/polkit-1/rules.d"
+}
