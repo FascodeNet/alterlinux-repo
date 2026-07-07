@@ -1,0 +1,13 @@
+pkgbase = devtools-alterlinux
+	pkgdesc = Extra tools for alterlinux package maintainers
+	pkgver = 2.e289c85
+	pkgrel = 1
+	url = https://github.com/FascodeNet/devtools-alterlinux
+	arch = x86_64
+	license = GPL
+	makedepends = git
+	depends = devtools
+	source = git+https://github.com/FascodeNet/devtools-alterlinux.git
+	sha256sums = SKIP
+
+pkgname = devtools-alterlinux

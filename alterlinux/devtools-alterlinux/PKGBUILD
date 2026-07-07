@@ -1,0 +1,32 @@
+# Maintainer : Yamada Hayao <shun819.mail@gmail.com>
+
+pkgname=devtools-alterlinux
+pkgver=2.e289c85
+pkgrel=1
+pkgdesc='Extra tools for alterlinux package maintainers'
+arch=('x86_64')
+url='https://github.com/FascodeNet/devtools-alterlinux'
+license=('GPL')
+depends=('devtools')
+makedepends=('git')
+source=("git+${url}.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/$pkgname"
+	echo "$(git rev-list --count master).$(git rev-parse --short master)"
+}
+
+package() {
+	cd "$srcdir/$pkgname"
+
+	install -dm755 "$pkgdir/usr/bin"
+	ln -sf archbuild "$pkgdir/usr/bin/alterlinux-x86_64-build"
+
+	# Concatenate onto the upstream base so the result is a complete pacman.conf
+	install -dm755 "$pkgdir/usr/share/devtools/pacman.conf.d"
+	cat \
+		/usr/share/devtools/pacman.conf.d/multilib.conf \
+		pacman.conf.d/alterlinux-x86_64.conf \
+		>"$pkgdir/usr/share/devtools/pacman.conf.d/alterlinux.conf"
+}
