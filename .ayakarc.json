@@ -7,6 +7,10 @@
         {
             "dir": "./alterlinux-aur",
             "destdir": "./out"
+        },
+        {
+            "dir": "./alterlinux-nostalgia",
+            "destdir": "./out"
         }
     ]
 }

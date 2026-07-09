@@ -1,0 +1,16 @@
+{
+    "name": "alterlinux-nostalgia",
+    "maintainer": "hayao <shun819.mail at gmail.com>",
+    "url": "",
+    "build": {
+        "repos": [],
+        "makepkg": {
+            "options": ["!debug"]
+        },
+        "archbuild": "nostalgia-i686-build"
+    },
+    "installpkgs": {
+        "files": [],
+        "names": []
+    }
+}
