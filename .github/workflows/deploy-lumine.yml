@@ -1,0 +1,28 @@
+name: Deploy lumine
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Track the Kamisato master frontend. A redeploy uploads nothing when the
+    # build is unchanged, so a daily run is cheap. Replace with a
+    # repository_dispatch from Kamisato on lumine/web changes for event-driven
+    # deploys.
+    - cron: "0 18 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Hayao0819/Kamisato/actions/build-lumine@master
+        id: lumine
+        with:
+          ayato_url: ${{ vars.AYATO_URL }}
+          auth_mode: bearer
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CF_ACCOUNT_ID }}
+          command: pages deploy ${{ steps.lumine.outputs.dir }} --project-name=${{ vars.PAGES_PROJECT }} --branch=main
