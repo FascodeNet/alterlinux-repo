@@ -1,0 +1,21 @@
+name: act-verify
+
+on: [push, workflow_dispatch]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.x"
+      - uses: Hayao0819/Kamisato/actions/install@main
+        with:
+          ayaka: "true"
+          source_dir: /kamisato-src
+      - name: Verify ayaka is installed with the container executor
+        run: |
+          set -e
+          which ayaka
+          ayaka build --help | grep -- --executor
+          echo "install action OK"
