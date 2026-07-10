@@ -4,10 +4,11 @@
     "url": "",
     "build": {
         "repos": [],
+        "arches": ["pentium4", "i686", "i486"],
+        "image": "ghcr.io/fascodenet/archlinux32-$arch:latest",
         "makepkg": {
             "options": ["!debug"]
-        },
-        "archbuild": "nostalgia-i686-build"
+        }
     },
     "installpkgs": {
         "files": [],
