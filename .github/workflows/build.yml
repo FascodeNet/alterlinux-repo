@@ -3,7 +3,7 @@ name: Build and publish
 on:
   push:
     branches: [master]
-    paths: ["alterlinux/**", "alterlinux-aur/**"]
+    paths: ["alterlinux/**", "alterlinux-aur/**", "alterlinux-nostalgia/**"]
   workflow_dispatch:
     inputs:
       packages:
@@ -20,16 +20,33 @@ permissions:
   contents: read
 
 jobs:
+  # Build the {repo, arch} matrix from each repo's repo.json build.arches
+  # (defaulting to x86_64), so a repo declares its own architectures.
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: gen
+        run: |
+          entries='[]'
+          for dir in $(jq -r '.repos[].dir' .ayakarc.json); do
+            rj="$dir/repo.json"
+            [ -f "$rj" ] || continue
+            name=$(jq -r '.name' "$rj")
+            for arch in $(jq -r '(.build.arches // ["x86_64"])[]' "$rj"); do
+              entries=$(jq -cn --argjson e "$entries" --arg r "$name" --arg a "$arch" '$e + [{repo: $r, arch: $a}]')
+            done
+          done
+          echo "matrix={\"include\":$entries}" >>"$GITHUB_OUTPUT"
+
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - repo: alterlinux
-            arch: x86_64
-          - repo: alterlinux-aur
-            arch: x86_64
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v5
         with:
