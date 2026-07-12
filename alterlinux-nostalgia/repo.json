@@ -5,7 +5,7 @@
     "build": {
         "repos": [],
         "arches": ["pentium4", "i686", "i486"],
-        "image": "ghcr.io/fascodenet/archlinux32-$arch:latest",
+        "image": "ghcr.io/hayao0819/archlinux:$arch",
         "makepkg": {
             "options": ["!debug"]
         }
