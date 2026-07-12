@@ -1,0 +1,264 @@
+diff --git a/src/internal/runtime/atomic/atomic_386.go b/src/internal/runtime/atomic/atomic_386.go
+index b6cdea6..b0c5397 100644
+--- a/src/internal/runtime/atomic/atomic_386.go
++++ b/src/internal/runtime/atomic/atomic_386.go
+@@ -123,3 +123,119 @@ func StoreReluintptr(ptr *uintptr, val uintptr)
+ 
+ // NO go:noescape annotation; see atomic_pointer.go.
+ func StorepNoWB(ptr unsafe.Pointer, val unsafe.Pointer)
++
++// Software 64-bit atomics for the i486, which lacks the MMX and CMPXCHG8B the
++// native path uses. atomic_386.s tail-calls these under GO386=softfloat. Mirrors
++// the pre-v7 ARM fallback: address-hashed spinlocks taken with the 32-bit Cas.
++type spinlock struct {
++	v uint32
++}
++
++//go:nosplit
++func (l *spinlock) lock() {
++	for !Cas(&l.v, 0, 1) {
++	}
++}
++
++//go:nosplit
++func (l *spinlock) unlock() {
++	Store(&l.v, 0)
++}
++
++var locktab [57]spinlock
++
++//go:nosplit
++func addrLock(addr *uint64) *spinlock {
++	return &locktab[(uintptr(unsafe.Pointer(addr))>>3)%uintptr(len(locktab))]
++}
++
++//go:nosplit
++func goLoad64(addr *uint64) uint64 {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr // fault on nil before taking the lock
++	addrLock(addr).lock()
++	r := *addr
++	addrLock(addr).unlock()
++	return r
++}
++
++//go:nosplit
++func goStore64(addr *uint64, v uint64) {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	addrLock(addr).lock()
++	*addr = v
++	addrLock(addr).unlock()
++}
++
++//go:nosplit
++func goCas64(addr *uint64, old, new uint64) bool {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	var ok bool
++	addrLock(addr).lock()
++	if *addr == old {
++		*addr = new
++		ok = true
++	}
++	addrLock(addr).unlock()
++	return ok
++}
++
++//go:nosplit
++func goXadd64(addr *uint64, delta int64) uint64 {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	addrLock(addr).lock()
++	r := *addr + uint64(delta)
++	*addr = r
++	addrLock(addr).unlock()
++	return r
++}
++
++//go:nosplit
++func goXchg64(addr *uint64, v uint64) uint64 {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	addrLock(addr).lock()
++	r := *addr
++	*addr = v
++	addrLock(addr).unlock()
++	return r
++}
++
++//go:nosplit
++func goAnd64(addr *uint64, v uint64) uint64 {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	addrLock(addr).lock()
++	old := *addr
++	*addr = old & v
++	addrLock(addr).unlock()
++	return old
++}
++
++//go:nosplit
++func goOr64(addr *uint64, v uint64) uint64 {
++	if uintptr(unsafe.Pointer(addr))&7 != 0 {
++		panicUnaligned()
++	}
++	_ = *addr
++	addrLock(addr).lock()
++	old := *addr
++	*addr = old | v
++	addrLock(addr).unlock()
++	return old
++}
+diff --git a/src/internal/runtime/atomic/atomic_386.s b/src/internal/runtime/atomic/atomic_386.s
+index e8745a1..2364097 100644
+--- a/src/internal/runtime/atomic/atomic_386.s
++++ b/src/internal/runtime/atomic/atomic_386.s
+@@ -73,6 +73,9 @@ TEXT ·Xaddint64(SB), NOSPLIT, $0-20
+ //		return false
+ //	}
+ TEXT ·Cas64(SB), NOSPLIT, $0-21
++#ifdef GO386_softfloat
++	JMP	·goCas64(SB)
++#else
+ 	NO_LOCAL_POINTERS
+ 	MOVL	ptr+0(FP), BP
+ 	TESTL	$7, BP
+@@ -86,6 +89,7 @@ TEXT ·Cas64(SB), NOSPLIT, $0-21
+ 	CMPXCHG8B	0(BP)
+ 	SETEQ	ret+20(FP)
+ 	RET
++#endif
+ 
+ // func Casp1(ptr *unsafe.Pointer, old, new unsafe.Pointer) bool
+ // Atomically:
+@@ -119,6 +123,9 @@ TEXT ·Xadd(SB), NOSPLIT, $0-12
+ 	RET
+ 
+ TEXT ·Xadd64(SB), NOSPLIT, $0-20
++#ifdef GO386_softfloat
++	JMP	·goXadd64(SB)
++#else
+ 	NO_LOCAL_POINTERS
+ 	// no XADDQ so use CMPXCHG8B loop
+ 	MOVL	ptr+0(FP), BP
+@@ -154,6 +161,7 @@ addloop:
+ 	MOVL	BX, ret_lo+12(FP)
+ 	MOVL	CX, ret_hi+16(FP)
+ 	RET
++#endif
+ 
+ // uint8 Xchg8(uint8 *ptr, uint8 new)
+ TEXT ·Xchg8(SB), NOSPLIT, $0-9
+@@ -180,6 +188,9 @@ TEXT ·Xchguintptr(SB), NOSPLIT, $0-12
+ 	JMP	·Xchg(SB)
+ 
+ TEXT ·Xchg64(SB),NOSPLIT,$0-20
++#ifdef GO386_softfloat
++	JMP	·goXchg64(SB)
++#else
+ 	NO_LOCAL_POINTERS
+ 	// no XCHGQ so use CMPXCHG8B loop
+ 	MOVL	ptr+0(FP), BP
+@@ -207,6 +218,7 @@ swaploop:
+ 	MOVL	AX, ret_lo+12(FP)
+ 	MOVL	DX, ret_hi+16(FP)
+ 	RET
++#endif
+ 
+ TEXT ·StorepNoWB(SB), NOSPLIT, $0-8
+ 	MOVL	ptr+0(FP), BX
+@@ -228,6 +240,9 @@ TEXT ·StoreReluintptr(SB), NOSPLIT, $0-8
+ 
+ // uint64 atomicload64(uint64 volatile* addr);
+ TEXT ·Load64(SB), NOSPLIT, $0-12
++#ifdef GO386_softfloat
++	JMP	·goLoad64(SB)
++#else
+ 	NO_LOCAL_POINTERS
+ 	MOVL	ptr+0(FP), AX
+ 	TESTL	$7, AX
+@@ -237,9 +252,13 @@ TEXT ·Load64(SB), NOSPLIT, $0-12
+ 	MOVQ	M0, ret+4(FP)
+ 	EMMS
+ 	RET
++#endif
+ 
+ // void ·Store64(uint64 volatile* addr, uint64 v);
+ TEXT ·Store64(SB), NOSPLIT, $0-12
++#ifdef GO386_softfloat
++	JMP	·goStore64(SB)
++#else
+ 	NO_LOCAL_POINTERS
+ 	MOVL	ptr+0(FP), AX
+ 	TESTL	$7, AX
+@@ -255,6 +274,7 @@ TEXT ·Store64(SB), NOSPLIT, $0-12
+ 	LOCK
+ 	XADDL	AX, (SP)
+ 	RET
++#endif
+ 
+ // void	·Or8(byte volatile*, byte);
+ TEXT ·Or8(SB), NOSPLIT, $0-5
+@@ -324,6 +344,9 @@ casloop:
+ 
+ // func And64(addr *uint64, v uint64) old uint64
+ TEXT ·And64(SB), NOSPLIT, $0-20
++#ifdef GO386_softfloat
++	JMP	·goAnd64(SB)
++#else
+ 	MOVL	ptr+0(FP), BP
+ 	// DI:SI = v
+ 	MOVL	val_lo+4(FP), SI
+@@ -343,10 +366,14 @@ casloop:
+ 	MOVL	AX, ret_lo+12(FP)
+ 	MOVL	DX, ret_hi+16(FP)
+ 	RET
++#endif
+ 
+ 
+ // func Or64(addr *uint64, v uint64) old uint64
+ TEXT ·Or64(SB), NOSPLIT, $0-20
++#ifdef GO386_softfloat
++	JMP	·goOr64(SB)
++#else
+ 	MOVL	ptr+0(FP), BP
+ 	// DI:SI = v
+ 	MOVL	val_lo+4(FP), SI
+@@ -366,6 +393,7 @@ casloop:
+ 	MOVL	AX, ret_lo+12(FP)
+ 	MOVL	DX, ret_hi+16(FP)
+ 	RET
++#endif
+ 
+ // func Anduintptr(addr *uintptr, v uintptr) old uintptr
+ TEXT ·Anduintptr(SB), NOSPLIT, $0-12
+diff --git a/src/runtime/asm_386.s b/src/runtime/asm_386.s
+index 03f1a46..706740e 100644
+--- a/src/runtime/asm_386.s
++++ b/src/runtime/asm_386.s
+@@ -152,9 +152,12 @@ notintel:
+ 	MOVL	CX, DI // Move to global variable clobbers CX when generating PIC
+ 	MOVL	AX, runtime·processorVersionInfo(SB)
+ 
++	// softfloat runtimes use no MMX, so skip the gate and run on the i486.
++#ifndef GO386_softfloat
+ 	// Check for MMX support
+ 	TESTL	$(1<<23), DX // MMX
+ 	JZ	bad_proc
++#endif
+ 
+ nocpuinfo:
+ 	// if there is an _cgo_init, call it to let it
