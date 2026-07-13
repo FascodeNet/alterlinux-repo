@@ -6,13 +6,18 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: Hayao0819/Kamisato
+          ref: master
+          path: kamisato-src
       - uses: actions/setup-go@v5
         with:
           go-version: "1.x"
       - uses: Hayao0819/Kamisato/actions/install@master
         with:
           ayaka: "true"
-          source_dir: /kamisato-src
+          source_dir: ${{ github.workspace }}/kamisato-src
       - name: Verify ayaka is installed with the container executor
         run: |
           set -e
