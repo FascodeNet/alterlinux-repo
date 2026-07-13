@@ -13,14 +13,17 @@ pkgdesc='Core compiler tools for the Go programming language'
 arch=('i486' 'i686' 'pentium4')
 url='https://go.dev/'
 license=(BSD-3-Clause)
-makedepends=(git go)
+makedepends=(git)
 replaces=(go-pie)
 provides=(go-pie)
 options=(!strip staticlibs)
 source=("https://go.dev/dl/go${pkgver}.src.tar.gz"
-        "go-i486-softfloat-atomics.patch")
+        "go-i486-softfloat-atomics.patch"
+        "go-bootstrap-${pkgver}-linux-386.tar.gz::https://go.dev/dl/go${pkgver}.linux-386.tar.gz")
+noextract=("go-bootstrap-${pkgver}-linux-386.tar.gz")
 sha256sums=('495be4bc87176ac567392e5b4116abd98466d33d7b49d41e764ccc6976b2dc42'
-            '5a984599a7149d53a8b7334b5fd653a1ea0a3e041b5fbd97fb502ec0ea0f116b')
+            '5a984599a7149d53a8b7334b5fd653a1ea0a3e041b5fbd97fb502ec0ea0f116b'
+            '88c162b204e6eefcc32499453b492e80209f4a4c78c33092636901c540fb0d05')
 
 prepare() {
   cd $pkgname
@@ -32,13 +35,20 @@ prepare() {
 }
 
 build() {
+  # Bootstrap from the official prebuilt linux-386 toolchain: archlinux32's go is
+  # 1.22.5, too old to build Go 1.26 (needs >=1.24.6). The prebuilt is GO386=sse2 and
+  # only runs on the builder (which has SSE2), so it bootstraps every target arch,
+  # including the softfloat i486 output.
+  mkdir -p "$srcdir/bootstrap"
+  tar -C "$srcdir/bootstrap" -xf "$srcdir/go-bootstrap-${pkgver}-linux-386.tar.gz"
+  export GOROOT_BOOTSTRAP="$srcdir/bootstrap/go"
+
   export GOARCH=386
   case "$CARCH" in
     pentium4) export GO386=sse2 ;;      # Pentium 4 has SSE2
     *) export GO386=softfloat ;;        # non-SSE2 i686/i486: software float
   esac
   export GOROOT_FINAL=/usr/lib/go
-  export GOROOT_BOOTSTRAP=/usr/lib/go
 
   # Disable dwarf5 until debugedit catches up
   export GOEXPERIMENT=nodwarf5
