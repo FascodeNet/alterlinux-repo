@@ -9,7 +9,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.x"
-      - uses: Hayao0819/Kamisato/actions/install@main
+      - uses: Hayao0819/Kamisato/actions/install@master
         with:
           ayaka: "true"
           source_dir: /kamisato-src
