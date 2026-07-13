@@ -92,3 +92,12 @@ jobs:
           repo: ${{ matrix.repo }}
           files: out/${{ matrix.repo }}/**/*.pkg.tar.*
           api_key: ${{ secrets.AYATO_TOKEN }}
+      # Runs even when nothing was built: a removed PKGBUILD produces no new package
+      # but its old one must still be pruned from ayato.
+      - name: Prune removed packages
+        uses: Hayao0819/Kamisato/actions/prune@master
+        with:
+          server: ${{ vars.AYATO_URL }}
+          repo: ${{ matrix.repo }}
+          arch: ${{ matrix.arch }}
+          api_key: ${{ secrets.AYATO_TOKEN }}
