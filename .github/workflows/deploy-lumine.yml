@@ -16,12 +16,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: Hayao0819/Kamisato/actions/build-lumine@master
+      # Secrets are unavailable in `if:`, so gate on an output derived from them:
+      # skip (green) when Cloudflare isn't configured instead of failing daily.
+      - id: cfg
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PROJECT: ${{ vars.PAGES_PROJECT }}
+        run: |
+          if [ -n "$TOKEN" ] && [ -n "$PROJECT" ]; then
+            echo "ready=true" >>"$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >>"$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare credentials not set (CLOUDFLARE_API_TOKEN/PAGES_PROJECT); skipping deploy"
+          fi
+      - if: steps.cfg.outputs.ready == 'true'
+        uses: Hayao0819/Kamisato/actions/build-lumine@master
         id: lumine
         with:
           ayato_url: ${{ vars.AYATO_URL }}
           auth_mode: bearer
-      - uses: cloudflare/wrangler-action@v3
+      - if: steps.cfg.outputs.ready == 'true'
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
