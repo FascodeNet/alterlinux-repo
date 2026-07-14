@@ -43,6 +43,10 @@ build() {
   tar -C "$srcdir/bootstrap" -xf "$srcdir/go-bootstrap-${pkgver}-linux-386.tar.gz"
   export GOROOT_BOOTSTRAP="$srcdir/bootstrap/go"
 
+  # Force a native 386 build: the builder is x86_64, so make.bash would otherwise
+  # treat this as a cross build and nest binaries under bin/linux_386/ (breaking the
+  # /usr/bin/go symlink). The 386 bootstrap runs fine on the x86_64 builder.
+  export GOHOSTOS=linux GOHOSTARCH=386
   export GOARCH=386
   case "$CARCH" in
     pentium4) export GO386=sse2 ;;      # Pentium 4 has SSE2
