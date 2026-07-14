@@ -35,8 +35,8 @@ options=(
 _srcname=linux-${pkgver%.*}
 _srctag=v${pkgver%.*}-${pkgver##*.}
 source=(
-  https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
-  $url/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
+  https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.xz
+  $url/releases/download/$_srctag/linux-$_srctag.patch.zst
   no-ultra-zstd.patch
 )
 source_i486=(
@@ -47,15 +47,10 @@ source_i486=(
 )
 source_i686=(config.i686)
 source_pentium4=(config.pentium4)
-validpgpkeys=(
-  ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
-  647F28654894E3BD457199BE38DBBDC86092693E  # Greg Kroah-Hartman
-  83BC8889351B5DEBBB68416EB8AC08600F108CDF  # Jan Alexander Steffens (heftig)
-)
+# b2sums pin the exact upstream tarball/patch, so verify by hash only (the build
+# containers lack the kernel PGP keys, and this keeps parity with the other pkgs).
 b2sums=('b6466e2798627522f0339c670a223b21266f4d4ede39163867c0f122295e54c5d24093abb51d5c6c6c917de0cb199836e81f45f7c391a5cc138cac2a519438e8'
-        'SKIP'
         'b402dbf0b29131c2c3fe80406c5560e3e1a5c1384d6a1ba670793b343d57300ec312da7d3a4f7b3f44a6615b015d7fbebb2c7df832a99aa0e1941faef0481baa'
-        'SKIP'
         '165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40')
 b2sums_i486=('eaf1aeab2305fb08f55ca1880e121f214448a7a611807d7d58f1baaf4046fe9df67be052e21ef2ec79f5dc618ba2ac29963b308c2a982717e0a363c341df65c8'
              'ed74c5825e4a9c476d166a9e0a989b376292e60d437b27438a423585e0f77a56f230ba04d73382a5e01156da3550d20580ab778edf9d899e109f812a16ab5056'
