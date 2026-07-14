@@ -1,0 +1,43 @@
+From ec90f4ad6e939e4ade74e59ac2f2eefed69c3aba Mon Sep 17 00:00:00 2001
+From: David Gow <david@davidgow.net>
+Date: Wed, 15 Apr 2026 08:15:59 +0800
+Subject: [PATCH] x86/boot/e820: Re-enable fallback if e820 table is empty
+
+In commit 157266edcc56 ("x86/boot/e820: Simplify append_e820_table() and remove restriction on single-entry tables"),
+the check that the number of entries in the e820 table was removed. The
+intention was to support single-entry maps, but by removing the check
+entirely, we also skip the fallback (to, e.g., the BIOS 88h function).
+
+This means that if no E820 map is passed in from the bootloader (which is
+the case on some bootloaders, like linld), we end up with an empty memory
+map, and the kernel fails to boot (either by deadlocking on OOM, or by
+failing to allocate the real mode trampoline, or similar).
+
+Re-instate the check in append_e820_table(), but only check nr_entries is
+non-zero. This allows e820__memory_setup_default() to fall back to other
+memory size sources, and doesn't affect e820__memory_setup_extended(), as
+the latter ignores the return value from append_e820_table().
+
+Tested against linld, and the kernel boots again fine.
+
+Fixes: 157266edcc56 ("x86/boot/e820: Simplify append_e820_table() and remove restriction on single-entry tables")
+Signed-off-by: David Gow <david@davidgow.net>
+---
+ arch/x86/kernel/e820.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index 2a999275893369..7dfd4bdc95fb4d 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -450,6 +450,10 @@ __init static int append_e820_table(struct boot_e820_entry *entries, u32 nr_entr
+ {
+ 	struct boot_e820_entry *entry = entries;
+ 
++	/* If there aren't any entries, we'll want to fall-back to another source. */
++	if (!nr_entries)
++		return -1;
++
+ 	while (nr_entries) {
+ 		u64 start = entry->addr;
+ 		u64 size  = entry->size;
