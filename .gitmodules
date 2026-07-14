@@ -9,4 +9,4 @@
 	url = https://aur.archlinux.org/ckbcomp.git
 [submodule "alterlinux-aur/archlinux32-keyring"]
 	path = alterlinux-aur/archlinux32-keyring
-	url = https://git.archlinux32.org/archlinux32-keyring/
+	url = https://github.com/FascodeNet/archlinux32-keyring.git
