@@ -1,0 +1,8 @@
+# nostalgia service policy. Sorts before Arch's 90-systemd/99-default presets,
+# applied at first boot or `systemctl preset-all` (the installer must run it).
+# NOTE: preset only sets enable/disable state; it does NOT mask. Units that must
+# never start are masked via /usr/lib symlinks by this package instead.
+enable dhcpcd.service
+enable sshd.service
+enable earlyoom.service
+disable systemd-networkd.service

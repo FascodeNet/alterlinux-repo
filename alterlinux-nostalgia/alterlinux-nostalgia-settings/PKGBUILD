@@ -1,0 +1,51 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+
+# Low-memory defaults for the archlinux32 nostalgia profile (i486, 128 MB,
+# non-PAE). Heavy systemd units are shipped pre-masked as vendor masks
+# (/usr/lib symlinks to /dev/null): systemctl treats those as masked, pacman
+# owns/updates/removes them, and the 30-systemd-daemon-reload hook applies them
+# at once. /etc is left untouched, so `systemctl unmask` and .pacnew never fight
+# the admin; per-unit override is a real unit in /etc/systemd/system/.
+# preset only sets enable/disable and cannot mask, so it stays a separate layer.
+
+pkgname=alterlinux-nostalgia-settings
+pkgver=1
+pkgrel=1
+pkgdesc='Low-memory systemd/kernel defaults for the archlinux32 nostalgia profile'
+arch=(any)
+url='https://github.com/FascodeNet/alterlinux-repo'
+license=(MIT)
+# The reference dbus-daemon costs ~8 MB less RSS than dbus-broker.
+depends=(dbus-daemon-units)
+optdepends=('earlyoom: userspace OOM killer that keeps a 128 MB box responsive'
+            'zram-generator: compressed swap in RAM')
+source=(journald-volatile.conf 99-nost-lowmem.conf 00-nost.preset)
+b2sums=('SKIP' 'SKIP' 'SKIP')
+
+# Never mask getty@.service itself (kills every console) or getty@tty1/tty2.
+_mask=(
+  systemd-resolved.service
+  systemd-homed.service
+  systemd-homed-activate.service
+  systemd-userdbd.service
+  systemd-userdbd.socket
+  systemd-networkd-wait-online.service
+  systemd-oomd.service
+  getty@tty3.service
+  getty@tty4.service
+  getty@tty5.service
+  getty@tty6.service
+  # systemd-timesyncd.service   # kept: retro boxes with a dead RTC need NTP
+)
+
+package() {
+  install -d "$pkgdir/usr/lib/systemd/system"
+  local u
+  for u in "${_mask[@]}"; do
+    ln -s /dev/null "$pkgdir/usr/lib/systemd/system/$u"
+  done
+
+  install -Dm644 journald-volatile.conf "$pkgdir/usr/lib/systemd/journald.conf.d/00-nost-volatile.conf"
+  install -Dm644 99-nost-lowmem.conf "$pkgdir/usr/lib/sysctl.d/99-nost-lowmem.conf"
+  install -Dm644 00-nost.preset "$pkgdir/usr/lib/systemd/system-preset/00-nost.preset"
+}

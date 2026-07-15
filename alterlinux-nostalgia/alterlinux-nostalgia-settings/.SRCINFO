@@ -1,0 +1,18 @@
+pkgbase = alterlinux-nostalgia-settings
+	pkgdesc = Low-memory systemd/kernel defaults for the archlinux32 nostalgia profile
+	pkgver = 1
+	pkgrel = 1
+	url = https://github.com/FascodeNet/alterlinux-repo
+	arch = any
+	license = MIT
+	depends = dbus-daemon-units
+	optdepends = earlyoom: userspace OOM killer that keeps a 128 MB box responsive
+	optdepends = zram-generator: compressed swap in RAM
+	source = journald-volatile.conf
+	source = 99-nost-lowmem.conf
+	source = 00-nost.preset
+	b2sums = SKIP
+	b2sums = SKIP
+	b2sums = SKIP
+
+pkgname = alterlinux-nostalgia-settings
