@@ -6,6 +6,7 @@
         "repos": [],
         "arches": ["pentium4", "i686", "i486"],
         "image": "ghcr.io/hayao0819/archlinux:$arch",
+        "timeout": "2h",
         "makepkg": {
             "options": ["!debug"]
         }
