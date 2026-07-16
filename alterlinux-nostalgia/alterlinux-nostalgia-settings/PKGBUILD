@@ -15,8 +15,6 @@ pkgdesc='Low-memory systemd/kernel defaults for the archlinux32 nostalgia profil
 arch=(any)
 url='https://github.com/FascodeNet/alterlinux-repo'
 license=(MIT)
-# The reference dbus-daemon costs ~8 MB less RSS than dbus-broker.
-depends=(dbus-daemon-units)
 optdepends=('earlyoom: userspace OOM killer that keeps a 128 MB box responsive'
             'zram-generator: compressed swap in RAM')
 source=(journald-volatile.conf 99-nost-lowmem.conf 00-nost.preset)
