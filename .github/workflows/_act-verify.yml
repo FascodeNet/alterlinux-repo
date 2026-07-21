@@ -6,12 +6,12 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           repository: Hayao0819/Kamisato
           ref: master
           path: kamisato-src
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: "1.x"
       - uses: Hayao0819/Kamisato/actions/install@master

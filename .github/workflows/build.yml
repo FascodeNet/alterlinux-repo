@@ -27,7 +27,7 @@ jobs:
     outputs:
       matrix: ${{ steps.gen.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - id: gen
         run: |
           entries='[]'
@@ -44,17 +44,18 @@ jobs:
   build:
     needs: prepare
     runs-on: ubuntu-latest
+    timeout-minutes: 355
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
           # git.archlinux32.org serves dumb HTTP, which rejects shallow clones;
           # full depth makes checkout clone submodules without --depth.
           fetch-depth: 0
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version: "1.x"
           cache: false
@@ -79,7 +80,7 @@ jobs:
           elif [ -n "$PACKAGES" ]; then
             ayaka build "$REPO" $PACKAGES --arch "$ARCH" --executor container
           else
-            ayaka build "$REPO" --diff --arch "$ARCH" --executor container --server "$diff_server"
+            ayaka build "$REPO" --diff --arch "$ARCH" --executor container --diff-url "$diff_server"
           fi
           if [ -n "$(find "out/$REPO" -name '*.pkg.tar.*' -print -quit 2>/dev/null)" ]; then
             echo "built=true" >>"$GITHUB_OUTPUT"

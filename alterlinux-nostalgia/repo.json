@@ -1,12 +1,11 @@
 {
     "name": "alterlinux-nostalgia",
     "maintainer": "hayao <shun819.mail at gmail.com>",
-    "url": "",
     "build": {
         "repos": [],
         "arches": ["pentium4", "i686", "i486"],
         "image": "ghcr.io/hayao0819/archlinux:$arch",
-        "timeout": "2h",
+        "timeout": "2h45m",
         "makepkg": {
             "options": ["!debug"]
         }
