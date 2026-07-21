@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       packages:
-        description: "Force-build these packages (space-separated). Empty = build only packages newer than ayato."
+        description: "Force-build these packages (space-separated). Empty = build what ayaka plan selects."
         required: false
         default: ""
       all:
@@ -16,38 +16,29 @@ on:
         required: false
         default: false
 
+# ayaka bump pushes pkgrel bumps for cascaded rebuilds back to master.
 permissions:
-  contents: read
+  contents: write
+
+# Serialize runs so a bump push cannot race another run's checkout.
+concurrency:
+  group: build-${{ github.ref }}
+
+env:
+  WORKERS: 4
 
 jobs:
-  # Build the {repo, arch} matrix from each repo's repo.json build.arches
-  # (defaulting to x86_64), so a repo declares its own architectures.
-  prepare:
+  # ayaka plan computes per {repo, arch} what to build (version diff +
+  # makedepends cascade), which packages need a pkgrel bump because they rebuild
+  # without a source change, and cost buckets that never split a dependency
+  # component — so the kernels land in their own parallel jobs.
+  plan:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.gen.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v7
-      - id: gen
-        run: |
-          entries='[]'
-          for dir in $(jq -r '.repos[].dir' .ayakarc.json); do
-            rj="$dir/repo.json"
-            [ -f "$rj" ] || continue
-            name=$(jq -r '.name' "$rj")
-            for arch in $(jq -r '(.build.arches // ["x86_64"])[]' "$rj"); do
-              entries=$(jq -cn --argjson e "$entries" --arg r "$name" --arg a "$arch" '$e + [{repo: $r, arch: $a}]')
-            done
-          done
-          echo "matrix={\"include\":$entries}" >>"$GITHUB_OUTPUT"
-
-  build:
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 355
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      build_matrix: ${{ steps.gen.outputs.build_matrix }}
+      prune_matrix: ${{ steps.gen.outputs.prune_matrix }}
+      bumps: ${{ steps.gen.outputs.bumps }}
+      any_build: ${{ steps.gen.outputs.any_build }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -63,41 +54,168 @@ jobs:
         with:
           ayaka: "true"
           version: master
-      - name: Build packages
-        id: build
+      - id: gen
         env:
           API_SERVER: ${{ vars.AYATO_URL }}
           PACKAGES: ${{ github.event.inputs.packages }}
           ALL: ${{ github.event.inputs.all }}
+        run: |
+          set -euo pipefail
+          build='[]'
+          prune='[]'
+          bumps='{}'
+          for dir in $(jq -r '.repos[].dir' .ayakarc.json); do
+            rj="$dir/repo.json"
+            [ -f "$rj" ] || continue
+            repo=$(jq -r '.name' "$rj")
+            for arch in $(jq -r '(.build.arches // ["x86_64"])[]' "$rj"); do
+              prune=$(jq -cn --argjson p "$prune" --arg r "$repo" --arg a "$arch" '$p + [{repo: $r, arch: $a}]')
+
+              # Force mode bypasses the plan: one bucket per {repo, arch} with
+              # the requested packages (empty = every package).
+              if [ "$ALL" = "true" ] || [ -n "$PACKAGES" ]; then
+                build=$(jq -cn --argjson b "$build" --arg r "$repo" --arg a "$arch" --arg p "$PACKAGES" \
+                  '$b + [{repo: $r, arch: $a, pkgs: $p}]')
+                continue
+              fi
+
+              plan=$(ayaka plan "$repo" --arch "$arch" --cascade makedepends \
+                --workers "$WORKERS" --format json \
+                --diff-url "${API_SERVER%/}/repo/$repo/$arch")
+              echo "plan $repo/$arch: $plan"
+              build=$(jq -cn --argjson b "$build" --argjson pl "$plan" --arg r "$repo" --arg a "$arch" \
+                '$b + [$pl.buckets // [] | .[] | {repo: $r, arch: $a, pkgs: join(" ")}]')
+              # pkgrel is arch-independent, so bump targets are unioned per repo.
+              bumps=$(jq -cn --argjson m "$bumps" --argjson pl "$plan" --arg r "$repo" \
+                '$m + {($r): ((($m[$r] // "" | split(" ")) + $pl.bump_targets) | map(select(. != "")) | unique | join(" "))}')
+            done
+          done
+          bumps=$(jq -cn --argjson m "$bumps" '$m | with_entries(select(.value != ""))')
+
+          any=true
+          if [ "$(jq -cn --argjson b "$build" '$b | length')" -eq 0 ]; then
+            any=false
+            echo "No packages need building."
+          fi
+          {
+            echo "build_matrix={\"include\":$build}"
+            echo "prune_matrix={\"include\":$prune}"
+            echo "bumps=$bumps"
+            echo "any_build=$any"
+          } >>"$GITHUB_OUTPUT"
+
+  # Cascaded rebuilds carry no source change of their own, so their pkgrel is
+  # bumped and pushed before the builds; the build jobs check out that commit.
+  # makepkg (for .SRCINFO regen) needs Arch tooling and refuses root, hence the
+  # container and the builder user.
+  bump:
+    needs: plan
+    if: needs.plan.outputs.bumps != '{}'
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - name: Install tooling
+        run: pacman -Syu --noconfirm base-devel git go sudo jq
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: Hayao0819/Kamisato/actions/install@master
+        with:
+          ayaka: "true"
+          version: master
+      - name: Bump pkgrel of cascade targets
+        env:
+          BUMPS: ${{ needs.plan.outputs.bumps }}
+        run: |
+          set -euo pipefail
+          install -m 0755 "$(command -v ayaka)" /usr/local/bin/ayaka
+          useradd -m builder
+          chown -R builder: .
+          for repo in $(jq -rn --argjson m "$BUMPS" '$m | keys[]'); do
+            pkgs=$(jq -rn --argjson m "$BUMPS" --arg r "$repo" '$m[$r]')
+            echo "bumping in $repo: $pkgs"
+            # shellcheck disable=SC2086 # pkgs is a space-separated package list
+            sudo -u builder ayaka bump "$repo" $pkgs --no-commit
+          done
+      - name: Commit and push
+        id: commit
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u .
+          git commit -m "chore: bump pkgrel for dependency rebuilds"
+          # A GITHUB_TOKEN push does not retrigger on:push; this run builds the
+          # bumped sources itself.
+          git push origin HEAD:master
+          echo "sha=$(git rev-parse HEAD)" >>"$GITHUB_OUTPUT"
+
+  # One job per plan bucket. Within a bucket ayaka builds dependencies first and
+  # --publish uploads each package right after it is built (and stops on
+  # failure), so a later chroot in the same bucket pulls the fresh dependency
+  # from ayato via repo.json build.repos.
+  build:
+    needs: [plan, bump]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.any_build == 'true' && (needs.bump.result == 'success' || needs.bump.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.build_matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.bump.outputs.sha || github.sha }}
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.x"
+          cache: false
+      - uses: Hayao0819/Kamisato/actions/install@master
+        with:
+          ayaka: "true"
+          version: master
+      - name: Build and publish packages
+        env:
+          API_SERVER: ${{ vars.AYATO_URL }}
+          AYAKA_PUBLISH_API_KEY: ${{ secrets.AYATO_TOKEN }}
           REPO: ${{ matrix.repo }}
           ARCH: ${{ matrix.arch }}
+          PKGS: ${{ matrix.pkgs }}
         run: |
-          # --diff compares local pkgver against the remote pacman db, so it needs
-          # the db directory URL (.../repo/<repo>/<arch>), derived per repo/arch.
-          diff_server="${API_SERVER%/}/repo/$REPO/$ARCH"
-          if [ "$ALL" = "true" ]; then
-            ayaka build "$REPO" --arch "$ARCH" --executor container
-          elif [ -n "$PACKAGES" ]; then
-            ayaka build "$REPO" $PACKAGES --arch "$ARCH" --executor container
-          else
-            ayaka build "$REPO" --diff --arch "$ARCH" --executor container --diff-url "$diff_server"
-          fi
-          if [ -n "$(find "out/$REPO" -name '*.pkg.tar.*' -print -quit 2>/dev/null)" ]; then
-            echo "built=true" >>"$GITHUB_OUTPUT"
-          else
-            echo "built=false" >>"$GITHUB_OUTPUT"
-            echo "No packages needed building."
-          fi
-      - name: Upload to ayato
-        if: steps.build.outputs.built == 'true'
-        uses: Hayao0819/Kamisato/actions/upload@master
+          set -euo pipefail
+          # shellcheck disable=SC2086 # PKGS is a space-separated package list
+          ayaka build "$REPO" $PKGS --arch "$ARCH" --executor container \
+            --publish --publish-url "$API_SERVER"
+
+  # Runs even when nothing was built: a removed PKGBUILD produces no new package
+  # but its old one must still be pruned from ayato.
+  prune:
+    needs: [plan, bump, build]
+    if: always() && needs.plan.result == 'success' && needs.build.result != 'failure' && needs.build.result != 'cancelled'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.prune_matrix) }}
+    steps:
+      - uses: actions/checkout@v7
         with:
-          server: ${{ vars.AYATO_URL }}
-          repo: ${{ matrix.repo }}
-          files: out/${{ matrix.repo }}/**/*.pkg.tar.*
-          api_key: ${{ secrets.AYATO_TOKEN }}
-      # Runs even when nothing was built: a removed PKGBUILD produces no new package
-      # but its old one must still be pruned from ayato.
+          ref: ${{ needs.bump.outputs.sha || github.sha }}
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.x"
+          cache: false
+      - uses: Hayao0819/Kamisato/actions/install@master
+        with:
+          ayaka: "true"
+          version: master
       - name: Prune removed packages
         uses: Hayao0819/Kamisato/actions/prune@master
         with:

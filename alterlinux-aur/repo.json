@@ -1,6 +1,14 @@
 {
     "name": "alterlinux-aur",
     "maintainer": "hayao <shun819.mail at gmail.com>",
+    "build": {
+        "repos": [
+            {
+                "name": "alterlinux-aur",
+                "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
+            }
+        ]
+    },
     "installpkgs": {
         "files": [],
         "names": []

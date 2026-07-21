@@ -1,4 +1,12 @@
 {
     "name": "alterlinux",
-    "maintainer": "hayao <shun819.mail at gmail.com>"
+    "maintainer": "hayao <shun819.mail at gmail.com>",
+    "build": {
+        "repos": [
+            {
+                "name": "alterlinux",
+                "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
+            }
+        ]
+    }
 }
