@@ -19,7 +19,6 @@ pkgbase = librsvg
 	makedepends = rust
 	makedepends = vala
 	depends = cairo
-	depends = dav1d
 	depends = fontconfig
 	depends = freetype2
 	depends = gdk-pixbuf2
