@@ -1,8 +1,8 @@
 pkgbase = alterlinux-keyring
 	pkgdesc = AlterLinux PGP keyring
-	pkgver = 20201117
-	pkgrel = 2
-	url = https:/fascode.net
+	pkgver = 20260707
+	pkgrel = 1
+	url = https://fascode.net
 	install = alterlinux-keyring.install
 	arch = any
 	license = GPL
