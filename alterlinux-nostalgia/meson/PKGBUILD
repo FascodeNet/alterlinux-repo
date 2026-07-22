@@ -1,0 +1,58 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+# Based on the Arch Linux meson package by Jan Alexander Steffens (heftig).
+
+# archlinux32 ships meson 1.4.0, too old to build fontconfig 2.17 (needs >=1.6.1)
+# and other current sources. This hosts meson 1.11.2 for the nostalgia build
+# environment; it also ships the arch-meson wrapper that the fontconfig PKGBUILD
+# calls. Docs and the (very heavy) test suite are dropped to keep it buildable on
+# archlinux32; the signed git tag is fetched unsigned.
+
+pkgname=meson
+pkgver=1.11.2
+pkgrel=1
+pkgdesc="High productivity build system"
+url="https://mesonbuild.com/"
+arch=(any)
+license=(Apache-2.0)
+depends=(
+  bash
+  'ninja>=1.8.2'
+  'python>=3.7'
+  python-tqdm
+)
+makedepends=(
+  git
+  python-build
+  python-installer
+  python-setuptools
+  python-wheel
+)
+source=(
+  "git+https://github.com/mesonbuild/meson#tag=$pkgver"
+  arch-meson
+  arch-meson-check-wraps
+  cross-lib32
+  native-clang
+)
+b2sums=('SKIP'
+        'ad9c206dd8ceab44e5f499e50a75736c4e8b803201e96ac07da6b088a166154f1478b10749a87c9dca2815a50f77b5c7f404b4e424d823bae5c8620c3aa05487'
+        '3e8ccfad662f774631930a0c278ed0532cde8bee211f8a179d5d506efbd7065536fad31494c375bebdf2ddc661cdab9abd30ac5e0a302836a6e1692a31508915'
+        'caf0775556b998968bcd658fa03c71aab8828eb30476693c1f5c318f9972f7cadee1d62d9ce07a1cd5ab71472484ad31f5fbde87820422ae3e4efa60c656fe2d'
+        '7d88929d5a3b49d91c5c9969f19d9b47f3151706526b889515acaeda0141257d5115875ac84832e9ea46f83a7700d673adcc5db84b331cd798c70ae6e90eac1e')
+
+build() {
+  cd meson
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd meson
+  python -m installer --destdir="$pkgdir" dist/*.whl
+
+  install -Dm644 data/shell-completions/bash/* -t "$pkgdir/usr/share/bash-completion/completions"
+  install -Dm644 data/shell-completions/zsh/*  -t "$pkgdir/usr/share/zsh/site-functions"
+
+  install -D ../arch-meson* -t "$pkgdir/usr/bin"
+  install -Dm644 ../cross-lib32 "$pkgdir/usr/share/meson/cross/lib32"
+  install -Dm644 ../native-clang "$pkgdir/usr/share/meson/native/clang"
+}

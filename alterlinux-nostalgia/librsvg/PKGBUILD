@@ -1,0 +1,93 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+# Based on the Arch Linux librsvg package by Jan Alexander Steffens (heftig).
+
+# archlinux32's librsvg 2.58.3 was linked against libxml2.so.2, but archlinux32
+# has since moved libxml2 to 2.15 (libxml2.so.16), so librsvg and its gdk-pixbuf
+# SVG loader fail with "libxml2.so.2: cannot open shared object file" (breaking
+# SVG icons across GTK). Rebuilding current librsvg against the present libxml2
+# fixes it. Tags use SSH signatures makepkg cannot verify, so the git source is
+# fetched unsigned.
+
+pkgbase=librsvg
+pkgname=(
+  librsvg
+  librsvg-docs
+)
+pkgver=2.62.3
+pkgrel=1
+epoch=2
+pkgdesc="SVG rendering library"
+url="https://gitlab.gnome.org/GNOME/librsvg"
+arch=(i486 i686 pentium4)
+license=(LGPL-2.1-or-later)
+depends=(
+  cairo
+  dav1d
+  fontconfig
+  freetype2
+  gdk-pixbuf2
+  glib2
+  glibc
+  harfbuzz
+  libgcc
+  libxml2
+  pango
+)
+makedepends=(
+  cargo-c
+  gi-docgen
+  git
+  gobject-introspection
+  llvm
+  'meson>=1.6.1'
+  python-docutils
+  rust
+  vala
+)
+checkdepends=(ttf-dejavu)
+source=(
+  "git+https://gitlab.gnome.org/GNOME/librsvg.git#tag=$pkgver"
+)
+b2sums=('SKIP')
+
+# Use debug
+export CARGO_PROFILE_RELEASE_DEBUG=2 CARGO_PROFILE_RELEASE_STRIP=false
+
+# Use LTO
+export CARGO_PROFILE_RELEASE_LTO=true CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+
+prepare() {
+  cd librsvg
+
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  local meson_options=(
+    -D avif=enabled
+    -D pixbuf-loader=disabled
+  )
+
+  arch-meson librsvg build "${meson_options[@]}"
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --print-errorlogs --no-rebuild
+}
+
+package_librsvg() {
+  provides=(librsvg-${pkgver%%.*}.so)
+
+  meson install -C build --destdir "$pkgdir" --no-rebuild
+
+  mkdir -p doc/usr/share
+  mv {"$pkgdir",doc}/usr/share/doc
+}
+
+package_librsvg-docs() {
+  pkgdesc+=" (documentation)"
+  depends=()
+
+  mv doc/* "$pkgdir"
+}

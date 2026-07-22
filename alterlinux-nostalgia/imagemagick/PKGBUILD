@@ -1,0 +1,137 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+# Based on the Arch Linux imagemagick package by Antonio Rojas.
+
+# archlinux32's imagemagick 7.1.1.15 is linked against libxml2.so.2 (gone since
+# libxml2 2.15) and pulls libraqm, which in turn needs the harfbuzz symbol
+# hb_ft_font_get_ft_face that archlinux32's harfbuzz 7.1.0 no longer exports.
+# So `convert` aborts on both counts. This rebuilds current imagemagick against
+# the present libxml2 and builds it --without-raqm, dropping the libraqm/harfbuzz
+# dependency (complex-text layout is unnecessary for this profile). Fixing raqm
+# proper needs a harfbuzz update, tracked separately.
+
+pkgname=imagemagick
+pkgver=7.1.2.27
+_pkgver=${pkgver%.*}-${pkgver##*.}
+pkgrel=1
+pkgdesc='An image viewing/manipulation program'
+url='https://www.imagemagick.org/'
+arch=(i486 i686 pentium4)
+license=(ImageMagick)
+depends=(bzip2
+         cairo
+         fftw
+         fontconfig
+         freetype2
+         glib2
+         glibc
+         lcms2
+         liblqr
+         libltdl
+         libpng
+         libxext
+         libxml2
+         libgcc
+         libstdc++
+         libgomp
+         xz
+         zlib)
+optdepends=('ghostscript: PS/PDF support'
+            'jbigkit: JBIG support'
+            'libheif: HEIF support'
+            'libjpeg-turbo: JPEG support'
+            'libjxl: JPEG XL support'
+            'libraw: DNG support'
+            'librsvg: SVG support'
+            'libtiff: TIFF support'
+            'libultrahdr: UHDR support'
+            'libwebp: WEBP support'
+            'libwmf: WMF support'
+            'libzip: OpenRaster support'
+            'ocl-icd: OpenCL support'
+            'openexr: OpenEXR support'
+            'openjpeg2: JPEG2000 support'
+            'djvulibre: DJVU support'
+            'pango: Text rendering')
+options+=(!emptydirs libtool)
+backup=(etc/ImageMagick-7/{colors,delegates,log,mime,policy,quantization-table,thresholds,type,type-{dejavu,ghostscript}}.xml)
+provides=(libmagick)
+makedepends=(chrpath
+             djvulibre
+             ghostscript
+             git
+             glu
+             jbigkit
+             libheif
+             libjpeg-turbo
+             libjxl
+             libraw
+             librsvg
+             libultrahdr
+             libwebp
+             libwmf
+             libzip
+             ocl-icd
+             opencl-headers
+             openexr
+             openjpeg2)
+checkdepends=(gsfonts
+              ttf-dejavu)
+replaces=(imagemagick-doc)
+source=(git+https://github.com/ImageMagick/ImageMagick#tag=$_pkgver)
+b2sums=('SKIP')
+
+build() {
+  cd ImageMagick
+  ./configure \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --enable-shared \
+    --disable-static \
+    --with-dejavu-font-dir=/usr/share/fonts/TTF \
+    --with-gs-font-dir=/usr/share/fonts/gsfonts \
+    PSDelegate=/usr/bin/gs \
+    XPSDelegate=/usr/bin/gxps \
+    PCLDelegate=/usr/bin/gpcl6 \
+    --enable-hdri \
+    --enable-opencl \
+    --without-gslib \
+    --with-djvu \
+    --with-fftw \
+    --with-jxl \
+    --with-lqr \
+    --with-modules \
+    --with-openexr \
+    --with-openjp2 \
+    --with-perl \
+    --with-perl-options='INSTALLDIRS=vendor INSTALL_BASE=' \
+    --with-rsvg \
+    --with-uhdr \
+    --with-webp \
+    --with-wmf \
+    --with-xml \
+    --without-autotrace \
+    --without-dps \
+    --without-fpx \
+    --without-gcc-arch \
+    --without-gvc \
+    --without-raqm
+  sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+check() (
+  cd ImageMagick
+  ulimit -n 4096
+  make check
+)
+
+package() {
+  cd ImageMagick
+  make DESTDIR="$pkgdir" install
+
+  find "$pkgdir/usr/lib/perl5" -name '*.so' -exec chrpath -d {} +
+  rm "$pkgdir"/etc/ImageMagick-*/type-{apple,urw-base35,windows}.xml
+  rm "$pkgdir"/usr/lib/*.la
+
+  install -Dm644 LICENSE NOTICE -t "$pkgdir"/usr/share/licenses/$pkgname
+}
