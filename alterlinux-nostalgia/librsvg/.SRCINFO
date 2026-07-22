@@ -4,7 +4,6 @@ pkgbase = librsvg
 	pkgrel = 1
 	epoch = 2
 	url = https://gitlab.gnome.org/GNOME/librsvg
-	arch = i486
 	arch = i686
 	arch = pentium4
 	license = LGPL-2.1-or-later

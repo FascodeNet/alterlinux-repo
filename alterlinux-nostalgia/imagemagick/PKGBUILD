@@ -65,7 +65,6 @@ makedepends=(chrpath
              libjpeg-turbo
              libjxl
              libraw
-             librsvg
              libultrahdr
              libwebp
              libwmf
@@ -74,6 +73,9 @@ makedepends=(chrpath
              opencl-headers
              openexr
              openjpeg2)
+# librsvg only where it exists; i486 has no rust, so no SVG delegate there.
+makedepends_i686=(librsvg)
+makedepends_pentium4=(librsvg)
 checkdepends=(gsfonts
               ttf-dejavu)
 replaces=(imagemagick-doc)
