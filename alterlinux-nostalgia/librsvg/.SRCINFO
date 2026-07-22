@@ -1,6 +1,6 @@
 pkgbase = librsvg
 	pkgdesc = SVG rendering library
-	pkgver = 2.62.3
+	pkgver = 2.60.0
 	pkgrel = 1
 	epoch = 2
 	url = https://gitlab.gnome.org/GNOME/librsvg
@@ -29,7 +29,7 @@ pkgbase = librsvg
 	depends = libgcc
 	depends = libxml2
 	depends = pango
-	source = git+https://gitlab.gnome.org/GNOME/librsvg.git#tag=2.62.3
+	source = git+https://gitlab.gnome.org/GNOME/librsvg.git#tag=2.60.0
 	b2sums = SKIP
 
 pkgname = librsvg
