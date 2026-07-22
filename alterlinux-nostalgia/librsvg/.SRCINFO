@@ -30,6 +30,7 @@ pkgbase = librsvg
 	depends = pango
 	source = git+https://gitlab.gnome.org/GNOME/librsvg.git#tag=2.60.0
 	b2sums = SKIP
+	makedepends_pentium4 = openssl-1.1
 
 pkgname = librsvg
 	provides = librsvg-2.so

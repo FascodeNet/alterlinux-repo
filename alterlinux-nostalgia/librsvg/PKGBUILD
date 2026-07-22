@@ -47,6 +47,8 @@ makedepends=(
   rust
   vala
 )
+# pentium4's cargo-c still links openssl 1.1 (archlinux32 packaging gap).
+makedepends_pentium4=(openssl-1.1)
 checkdepends=(ttf-dejavu)
 source=(
   "git+https://gitlab.gnome.org/GNOME/librsvg.git#tag=$pkgver"
