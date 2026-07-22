@@ -78,6 +78,7 @@ pkgbase = imagemagick
 	backup = etc/ImageMagick-7/type-ghostscript.xml
 	source = git+https://github.com/ImageMagick/ImageMagick#tag=7.1.2-27
 	b2sums = SKIP
+	makedepends_i486 = librsvg-og
 	makedepends_i686 = librsvg
 	makedepends_pentium4 = librsvg
 

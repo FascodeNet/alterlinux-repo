@@ -73,7 +73,8 @@ makedepends=(chrpath
              opencl-headers
              openexr
              openjpeg2)
-# librsvg only where it exists; i486 has no rust, so no SVG delegate there.
+# i486 has no rust; archlinux32's librsvg-og (pre-rust 2.40 C fork) covers it.
+makedepends_i486=(librsvg-og)
 makedepends_i686=(librsvg)
 makedepends_pentium4=(librsvg)
 checkdepends=(gsfonts
