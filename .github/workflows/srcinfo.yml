@@ -1,0 +1,19 @@
+name: Check .SRCINFO
+
+on:
+  pull_request:
+    paths: ["alterlinux/**", "alterlinux-nostalgia/**"]
+  push:
+    branches: [master]
+    paths: ["alterlinux/**", "alterlinux-nostalgia/**"]
+
+permissions:
+  contents: read
+
+# alterlinux-aur is excluded: its packages are upstream AUR submodules whose
+# .SRCINFO is maintained there.
+jobs:
+  srcinfo:
+    uses: Hayao0819/Kamisato/.github/workflows/srcinfo-check.yml@master
+    with:
+      repos: alterlinux alterlinux-nostalgia
