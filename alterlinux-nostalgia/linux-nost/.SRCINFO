@@ -1,7 +1,7 @@
 pkgbase = linux-nost
 	pkgdesc = Linux for nostalgic 32-bit machines
 	pkgver = 7.1.3.arch1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/archlinux/linux
 	arch = i486
 	arch = i686
@@ -28,14 +28,14 @@ pkgbase = linux-nost
 	source_i486 = 0001-i486-revert-remove-m486.patch
 	source_i486 = 0002-i486-e820-fallback.patch
 	source_i486 = 0003-i486-checksum-unaligned.patch
-	b2sums_i486 = eaf1aeab2305fb08f55ca1880e121f214448a7a611807d7d58f1baaf4046fe9df67be052e21ef2ec79f5dc618ba2ac29963b308c2a982717e0a363c341df65c8
+	b2sums_i486 = a60634d24ff4dc47ab8b2bab5d45a1a620443bef6999eccff15ae67dbf8353bc6c29c5078c7568cfa55aaf70bc7beb1912cb025aa2f189c1e182da37bd66a034
 	b2sums_i486 = ed74c5825e4a9c476d166a9e0a989b376292e60d437b27438a423585e0f77a56f230ba04d73382a5e01156da3550d20580ab778edf9d899e109f812a16ab5056
 	b2sums_i486 = 0a254a000db6aad124c70c50cd2a7fc5fe2027a1e3c5b6b0ae6751e94faa875da65ee13ca18a3fa6b2eaabf52aa410c196fd1d82abb6bd1d8481f59f70c355b3
 	b2sums_i486 = a314b73c481dd5d82ab2fa9cde5551cb1dd69c56440ab0b4d9ec9d58255ba6874bb81beff28124e2a174765436b202999913335e77994372928049a9db85b19c
 	source_i686 = config.i686
-	b2sums_i686 = 555af78309597c803109d6ab264646ebd786613a87c264cf21bc6d98baf6856b65437e8cd364481a9e3c847333f474797f9e280f0c0800297a5291ccb77e19ec
+	b2sums_i686 = deefe59f1a86abd7d1a3886450990eda89f4154a32e282601b1fb300705d0792cb1cc757b49d0e7625fcc4967aab9ed3e25e61b2b5509ff292aa3e9e4e1766f7
 	source_pentium4 = config.pentium4
-	b2sums_pentium4 = ed4c4d6316577cc5327e4b4498f4f6d7dadd879c5d3df85798567c42df3a35e86ef2538361769285e8596bf3214f4388e3eab4150dd07484d82a6584ee6cac05
+	b2sums_pentium4 = 7ed6a9bc20796e8df019e8e9f885c4b8fb47d82a8f505daa1526333b5b41d0bae3258814c40371997dfef7935431af46e895011d0d3211d1fff7ad1bb85df7fe
 
 pkgname = linux-nost
 	pkgdesc = The Linux for nostalgic 32-bit machines kernel and modules

@@ -1,7 +1,7 @@
 pkgbase = linux-nost-lts
 	pkgdesc = LTS Linux for nostalgic 32-bit machines
 	pkgver = 6.18.38
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.kernel.org/
 	arch = i486
 	arch = i686
@@ -23,11 +23,11 @@ pkgbase = linux-nost-lts
 	b2sums = 3260a9de3db1291f8240c75c94f386ca36b6334a89cee9bc27e3b3de8ecbd5886c2bae7ba4c1d3d75fb633b85dc3192fabd806c56d04128d568dd078c3757211
 	b2sums = 165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40
 	source_i486 = config.i486
-	b2sums_i486 = 8632d1dc044b16b9110c44dddb8e6fba2aa7046de16be0a78d20ecbbf2d707aa838ecdc9728625ba1bf790ea7f9ace9089d042f2bba6ff7a95ccc9f90ec3f300
+	b2sums_i486 = 8e8db0219dabd4f4db16c52c95491cdc321841e2fe9256b9aef442de2b212884e318ca1aa8f507291560744422111758ffc57c4ed5b8ab8f1f15ba09c5680bb7
 	source_i686 = config.i686
-	b2sums_i686 = e9aedb0305fb08a6d3c7c5e5738cf9385c38fd888be8d62d0334aeba82923bc6823b9048741583153272640122a3d5bcc52a9d2ed82a60906cd9af3a5818902a
+	b2sums_i686 = fa8f1c8f10f7a19983197472c86c391c82eff3af6c0e73790ca5a84a8e917af6d5a0e144373c7d6046d46cf7660945e135574ac90985dc861b7fb7a7bc57b745
 	source_pentium4 = config.pentium4
-	b2sums_pentium4 = 13985a578df12850113579a60f81de5c9bf032d3d386def0868fb2dee74d82c30bf4534c8228950ba4fa08805022b925a6d43896d054ac7586bd8e5ca6a28e16
+	b2sums_pentium4 = 1be84180e28cdd09d4f7c84d12cdde9ca77fc4d9d7d9053b2a8e2bb931c66068d6c19b91ce6a89284c16a2c0fc78ce390229735ab8f16a93ec32b2885b97e3de
 
 pkgname = linux-nost-lts
 	pkgdesc = The LTS Linux for nostalgic 32-bit machines kernel and modules
