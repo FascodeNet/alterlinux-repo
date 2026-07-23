@@ -9,12 +9,12 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: Hayao0819/Kamisato
-          ref: master
+          ref: 636e0d4ba17cb103c19817dd5a60dce05838fd26
           path: kamisato-src
       - uses: actions/setup-go@v7
         with:
           go-version: "1.x"
-      - uses: Hayao0819/Kamisato/actions/install@master
+      - uses: Hayao0819/Kamisato/actions/install@636e0d4ba17cb103c19817dd5a60dce05838fd26 # master
         with:
           ayaka: "true"
           source_dir: ${{ github.workspace }}/kamisato-src
