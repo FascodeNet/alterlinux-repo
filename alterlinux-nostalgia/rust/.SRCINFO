@@ -1,0 +1,36 @@
+pkgbase = rust
+	pkgdesc = Systems programming language (self-hosted, emits i486 code)
+	pkgver = 1.82.0
+	pkgrel = 1
+	epoch = 1
+	url = https://www.rust-lang.org/
+	arch = i486
+	license = Apache-2.0 OR MIT
+	makedepends = cmake
+	makedepends = llvm19
+	makedepends = ninja
+	makedepends = perl
+	makedepends = pkgconf
+	makedepends = python
+	depends = bzip2
+	depends = curl
+	depends = gcc
+	depends = gcc-libs
+	depends = glibc
+	depends = libssh2
+	depends = llvm19-libs
+	depends = openssl
+	depends = zlib
+	provides = cargo=1.82.0
+	options = !debug
+	options = !lto
+	source = https://static.rust-lang.org/dist/rustc-1.82.0-src.tar.xz
+	source = https://static.rust-lang.org/dist/rustc-1.82.0-i686-unknown-linux-gnu.tar.xz
+	source = https://static.rust-lang.org/dist/cargo-1.82.0-i686-unknown-linux-gnu.tar.xz
+	source = https://static.rust-lang.org/dist/rust-std-1.82.0-i686-unknown-linux-gnu.tar.xz
+	sha256sums = 1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210
+	sha256sums = 92bab38ce88b7738fb62a1bccf496b1b2975fe984cc4fc506903a03ed37e1e4a
+	sha256sums = 1cf5bae93e9724f50f1a20a752f05870565e0ce83baa157aad632aa162fd97d5
+	sha256sums = c7ebb02b6ca349999b3b7dce768efaca5e0d9060f55397523e11a64cd10a9405
+
+pkgname = rust
