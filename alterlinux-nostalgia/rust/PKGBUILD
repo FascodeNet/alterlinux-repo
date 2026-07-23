@@ -77,6 +77,7 @@ description = "AlterLinux nostalgia"
 debuginfo-level = 0
 codegen-units-std = 1
 rpath = false
+deny-warnings = false
 
 [target.$_host]
 cc = "/usr/bin/gcc"
@@ -92,6 +93,9 @@ build() {
   cd "rustc-$pkgver-src"
   # rust manages its own flags; makepkg's would leak into cross bits.
   unset CFLAGS CXXFLAGS LDFLAGS
+  # portable-atomic's x86 asm module assumes CMPXCHG8B, which the patched
+  # target lacks; the cfg drops it for stage1+ in favor of its fallback.
+  export RUSTFLAGS_NOT_BOOTSTRAP="--cfg portable_atomic_no_asm"
   DESTDIR="$srcdir/dest" python ./x.py install -j "$(nproc)"
 }
 
