@@ -1,0 +1,82 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+
+# archlinux32's i486 llvm is stuck at 14, too old to build rust 1.82 (needs
+# LLVM 17+). This ships LLVM 19 under a versioned /usr/lib/llvm19 prefix so it
+# coexists with their llvm/llvm-libs 14. Trimmed to what the rust build uses:
+# llvm-config, headers and the libLLVM dylib. X86 only.
+
+pkgbase=llvm19
+pkgname=(llvm19 llvm19-libs)
+pkgver=19.1.7
+pkgrel=1
+url='https://llvm.org/'
+arch=(i486)
+license=('Apache-2.0 WITH LLVM-exception')
+makedepends=(cmake ninja python zlib)
+options=(!debug !lto)
+source=(https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/llvm-$pkgver.src.tar.xz
+        https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/cmake-$pkgver.src.tar.xz
+        https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/third-party-$pkgver.src.tar.xz)
+sha256sums=('96f833c6ad99a3e8e1d9aca5f439b8fd2c7efdcf83b664e0af1c0712c5315910'
+            '11c5a28f90053b0c43d0dec3d0ad579347fc277199c005206b963c19aae514e3'
+            'b96deca1d3097c7ffd4ff2bb904a50bdd56bec7ed1413ffb0d1d01af87b72c12')
+
+prepare() {
+  mv cmake-$pkgver.src cmake
+  mv third-party-$pkgver.src third-party
+}
+
+build() {
+  local use_linker=()
+  [ -x /usr/bin/ld.gold ] && use_linker=(-DLLVM_USE_LINKER=gold)
+  cmake -S llvm-$pkgver.src -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/lib/llvm19 \
+    -DCMAKE_SKIP_RPATH=ON \
+    -DLLVM_HOST_TRIPLE="$CHOST" \
+    -DLLVM_TARGETS_TO_BUILD=X86 \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON \
+    -DLLVM_ENABLE_RTTI=ON \
+    -DLLVM_ENABLE_BINDINGS=OFF \
+    -DLLVM_ENABLE_ZLIB=FORCE_ON \
+    -DLLVM_ENABLE_ZSTD=OFF \
+    -DLLVM_ENABLE_LIBXML2=OFF \
+    -DLLVM_ENABLE_LIBEDIT=OFF \
+    -DLLVM_ENABLE_FFI=OFF \
+    -DLLVM_INCLUDE_TESTS=OFF \
+    -DLLVM_INCLUDE_BENCHMARKS=OFF \
+    -DLLVM_INCLUDE_EXAMPLES=OFF \
+    -DLLVM_INCLUDE_DOCS=OFF \
+    -DLLVM_INSTALL_UTILS=OFF \
+    -DLLVM_PARALLEL_LINK_JOBS=1 \
+    "${use_linker[@]}"
+  ninja -C build
+}
+
+package_llvm19() {
+  pkgdesc='LLVM 19 for building rust on i486 (llvm-config, headers)'
+  depends=(llvm19-libs)
+
+  DESTDIR="$srcdir/dest" ninja -C build install
+  local d="$srcdir/dest/usr/lib/llvm19"
+  mkdir -p "$pkgdir/usr/lib/llvm19"/{bin,lib}
+  cp -a "$d/include" "$pkgdir/usr/lib/llvm19/"
+  cp -a "$d/bin/llvm-config" "$pkgdir/usr/lib/llvm19/bin/"
+  # llvm-config --link-shared resolves the dylib through this symlink.
+  cp -a "$d"/lib/libLLVM.so "$pkgdir/usr/lib/llvm19/lib/"
+  install -Dm644 llvm-$pkgver.src/LICENSE.TXT \
+    -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
+
+package_llvm19-libs() {
+  pkgdesc='LLVM 19 runtime library for i486'
+  depends=(gcc-libs zlib)
+
+  install -Dm755 "$srcdir"/dest/usr/lib/llvm19/lib/libLLVM.so.* \
+    -t "$pkgdir/usr/lib/llvm19/lib/"
+  echo /usr/lib/llvm19/lib | install -Dm644 /dev/stdin \
+    "$pkgdir/etc/ld.so.conf.d/llvm19.conf"
+  install -Dm644 llvm-$pkgver.src/LICENSE.TXT \
+    -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
