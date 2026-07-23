@@ -43,7 +43,6 @@ optdepends=('ghostscript: PS/PDF support'
             'libraw: DNG support'
             'librsvg: SVG support'
             'libtiff: TIFF support'
-            'libultrahdr: UHDR support'
             'libwebp: WEBP support'
             'libwmf: WMF support'
             'libzip: OpenRaster support'
@@ -65,7 +64,6 @@ makedepends=(chrpath
              libjpeg-turbo
              libjxl
              libraw
-             libultrahdr
              libwebp
              libwmf
              libzip
@@ -73,6 +71,7 @@ makedepends=(chrpath
              opencl-headers
              openexr
              openjpeg2)
+# archlinux32 has no libultrahdr, so UHDR stays off.
 # i486 has no rust; archlinux32's librsvg-og (pre-rust 2.40 C fork) covers it.
 makedepends_i486=(librsvg-og)
 makedepends_i686=(librsvg)
@@ -108,7 +107,7 @@ build() {
     --with-perl \
     --with-perl-options='INSTALLDIRS=vendor INSTALL_BASE=' \
     --with-rsvg \
-    --with-uhdr \
+    --without-uhdr \
     --with-webp \
     --with-wmf \
     --with-xml \
