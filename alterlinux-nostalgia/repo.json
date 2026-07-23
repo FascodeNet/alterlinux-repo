@@ -8,11 +8,18 @@
                 "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
             }
         ],
-        "arches": ["pentium4", "i686", "i486"],
+        "arches": [
+            "pentium4",
+            "i686",
+            "i486"
+        ],
         "image": "ghcr.io/hayao0819/archlinux:$arch",
         "timeout": "5h15m",
         "makepkg": {
-            "options": ["!debug"]
+            "options": [
+                "!debug"
+            ],
+            "compresszst": "zstd -c -T0 --ultra -20 -"
         }
     },
     "installpkgs": {
