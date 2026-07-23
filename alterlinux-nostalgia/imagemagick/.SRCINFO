@@ -17,7 +17,6 @@ pkgbase = imagemagick
 	makedepends = jbigkit
 	makedepends = libheif
 	makedepends = libjpeg-turbo
-	makedepends = libjxl
 	makedepends = libraw
 	makedepends = libwebp
 	makedepends = libwmf
@@ -48,7 +47,6 @@ pkgbase = imagemagick
 	optdepends = jbigkit: JBIG support
 	optdepends = libheif: HEIF support
 	optdepends = libjpeg-turbo: JPEG support
-	optdepends = libjxl: JPEG XL support
 	optdepends = libraw: DNG support
 	optdepends = librsvg: SVG support
 	optdepends = libtiff: TIFF support
@@ -77,7 +75,11 @@ pkgbase = imagemagick
 	source = git+https://github.com/ImageMagick/ImageMagick#tag=7.1.2-27
 	b2sums = SKIP
 	makedepends_i486 = librsvg-og
+	optdepends_i686 = libjxl: JPEG XL support
 	makedepends_i686 = librsvg
+	makedepends_i686 = libjxl
+	optdepends_pentium4 = libjxl: JPEG XL support
 	makedepends_pentium4 = librsvg
+	makedepends_pentium4 = libjxl
 
 pkgname = imagemagick

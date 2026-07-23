@@ -39,7 +39,6 @@ optdepends=('ghostscript: PS/PDF support'
             'jbigkit: JBIG support'
             'libheif: HEIF support'
             'libjpeg-turbo: JPEG support'
-            'libjxl: JPEG XL support'
             'libraw: DNG support'
             'librsvg: SVG support'
             'libtiff: TIFF support'
@@ -62,7 +61,6 @@ makedepends=(chrpath
              jbigkit
              libheif
              libjpeg-turbo
-             libjxl
              libraw
              libwebp
              libwmf
@@ -73,9 +71,12 @@ makedepends=(chrpath
              openjpeg2)
 # archlinux32 has no libultrahdr, so UHDR stays off.
 # i486 has no rust; archlinux32's librsvg-og (pre-rust 2.40 C fork) covers it.
+# i486 also lacks libjxl, so JXL is i686/pentium4 only.
 makedepends_i486=(librsvg-og)
-makedepends_i686=(librsvg)
-makedepends_pentium4=(librsvg)
+makedepends_i686=(librsvg libjxl)
+makedepends_pentium4=(librsvg libjxl)
+optdepends_i686=('libjxl: JPEG XL support')
+optdepends_pentium4=('libjxl: JPEG XL support')
 checkdepends=(gsfonts
               ttf-dejavu)
 replaces=(imagemagick-doc)
@@ -84,6 +85,8 @@ b2sums=('SKIP')
 
 build() {
   cd ImageMagick
+  local jxl_flag=--with-jxl
+  [[ $CARCH == i486 ]] && jxl_flag=--without-jxl
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
@@ -99,7 +102,7 @@ build() {
     --without-gslib \
     --with-djvu \
     --with-fftw \
-    --with-jxl \
+    $jxl_flag \
     --with-lqr \
     --with-modules \
     --with-openexr \
