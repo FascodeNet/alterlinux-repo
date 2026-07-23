@@ -14,7 +14,7 @@
             "i486"
         ],
         "image": "ghcr.io/hayao0819/archlinux:$arch",
-        "timeout": "5h15m",
+        "timeout": "5h45m",
         "makepkg": {
             "options": [
                 "!debug"
