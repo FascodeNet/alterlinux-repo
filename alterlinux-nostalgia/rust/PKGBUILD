@@ -1,48 +1,31 @@
 # Maintainer: hayao <shun819.mail at gmail.com>
 
 # archlinux32 blacklists rust on i486: rustc has no bootstrap binary for it.
-# This builds a self-hosted toolchain instead: the official i686 binaries act
-# as stage0 (they need an SSE2-capable build CPU; CI runs the i486 chroot on
-# modern hardware), and the i686-unknown-linux-gnu spec is patched to cpu=i486
-# with max-atomic-width 32 (no CMPXCHG8B), so stage2 rustc, std and cargo are
-# all i486-clean and run on a real 486. Links the llvm19 package because
-# archlinux32's i486 llvm is stuck at 14, too old for rust 1.82.
-# Pinned to 1.82.0 to match archlinux32's rust on i686/pentium4.
+# This builds a self-hosted toolchain instead: the repo's own rust package is
+# stage0 (seeded once from the official i686 binaries; see this file before
+# pkgrel 2 to reseed a from-scratch repo), and the i686-unknown-linux-gnu spec
+# is patched to cpu=i486 with max-atomic-width 32 (no CMPXCHG8B), so stage2
+# rustc, std and cargo are all i486-clean and run on a real 486. Links the
+# llvm19 package because archlinux32's i486 llvm is stuck at 14, too old for
+# rust 1.82. Pinned to 1.82.0 to match archlinux32's rust on i686/pentium4.
 
 pkgname=rust
 epoch=1
 pkgver=1.82.0
-pkgrel=1
+pkgrel=2
 pkgdesc='Systems programming language (self-hosted, emits i486 code)'
 url='https://www.rust-lang.org/'
 arch=(i486)
 license=('Apache-2.0 OR MIT')
 depends=(bzip2 curl gcc gcc-libs glibc libssh2 llvm19-libs openssl zlib)
-makedepends=(cmake llvm19 ninja perl pkgconf python)
+makedepends=(cmake llvm19 ninja perl pkgconf python rust)
 provides=(cargo=$pkgver)
 options=(!debug !lto)
 _host=i686-unknown-linux-gnu
-source=(https://static.rust-lang.org/dist/rustc-$pkgver-src.tar.xz
-        https://static.rust-lang.org/dist/rustc-$pkgver-$_host.tar.xz
-        https://static.rust-lang.org/dist/cargo-$pkgver-$_host.tar.xz
-        https://static.rust-lang.org/dist/rust-std-$pkgver-$_host.tar.xz)
-sha256sums=('1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210'
-            '92bab38ce88b7738fb62a1bccf496b1b2975fe984cc4fc506903a03ed37e1e4a'
-            '1cf5bae93e9724f50f1a20a752f05870565e0ce83baa157aad632aa162fd97d5'
-            'c7ebb02b6ca349999b3b7dce768efaca5e0d9060f55397523e11a64cd10a9405')
+source=(https://static.rust-lang.org/dist/rustc-$pkgver-src.tar.xz)
+sha256sums=('1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210')
 
 prepare() {
-  if ! grep -qw sse2 /proc/cpuinfo; then
-    echo "ERROR: the stage0 i686 rustc needs SSE2; build on a modern CPU (the result runs on i486)" >&2
-    return 1
-  fi
-
-  local stage0="$srcdir/stage0" c
-  mkdir -p "$stage0"
-  for c in rustc-$pkgver-$_host cargo-$pkgver-$_host rust-std-$pkgver-$_host; do
-    "$srcdir/$c/install.sh" --prefix="$stage0" --disable-ldconfig
-  done
-
   cd "rustc-$pkgver-src"
   local spec=compiler/rustc_target/src/spec/targets/i686_unknown_linux_gnu.rs
   grep -q '"pentium4"' "$spec" && grep -q 'max_atomic_width = Some(64)' "$spec"
@@ -60,8 +43,8 @@ link-shared = true
 build = "$_host"
 host = ["$_host"]
 target = ["$_host"]
-rustc = "$stage0/bin/rustc"
-cargo = "$stage0/bin/cargo"
+rustc = "/usr/bin/rustc"
+cargo = "/usr/bin/cargo"
 docs = false
 extended = true
 tools = ["cargo"]
