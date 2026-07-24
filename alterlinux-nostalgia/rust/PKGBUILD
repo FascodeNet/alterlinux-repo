@@ -12,7 +12,7 @@
 pkgname=rust
 epoch=1
 pkgver=1.82.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Systems programming language (self-hosted, emits i486 code)'
 url='https://www.rust-lang.org/'
 arch=(i486)
@@ -74,12 +74,30 @@ EOF
 
 build() {
   cd "rustc-$pkgver-src"
-  # rust manages its own flags; makepkg's would leak into cross bits.
-  unset CFLAGS CXXFLAGS LDFLAGS
+  # Rust code gets i486 from the patched spec, but the C/C++ parts (llvm-wrapper,
+  # compiler-rt, cargo's vendored libs) take march from these; gcc's default here
+  # is above i486.
+  export CFLAGS='-march=i486 -O2' CXXFLAGS='-march=i486 -O2'
+  unset LDFLAGS
   # portable-atomic's x86 asm module assumes CMPXCHG8B, which the patched
   # target lacks; the cfg drops it for stage1+ in favor of its fallback.
   export RUSTFLAGS_NOT_BOOTSTRAP="--cfg portable_atomic_no_asm"
   DESTDIR="$srcdir/dest" python ./x.py install -j "$(nproc)"
+}
+
+check() {
+  local root="$srcdir/dest" re=$'\t''(cmov|fcmov|fcomi|fucomi|cmpxchg8b|rdtsc|nopl|nopw)|%xmm'
+  local bad=0 f
+  # librustc_driver and cargo keep runtime-dispatched sha1/sha2 SSE2 paths, so
+  # only the artifacts that must be strictly i486-clean are asserted.
+  for f in "$root"/usr/lib/libstd-*.so \
+           "$root"/usr/lib/rustlib/$_host/lib/lib{std,core,alloc,compiler_builtins}-*.rlib; do
+    if objdump -d "$f" | grep -qE "$re"; then
+      echo "ERROR: post-i486 instructions in ${f##*/}" >&2
+      bad=1
+    fi
+  done
+  return $bad
 }
 
 package() {
