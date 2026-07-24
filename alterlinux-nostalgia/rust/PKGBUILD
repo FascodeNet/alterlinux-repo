@@ -12,7 +12,7 @@
 pkgname=rust
 epoch=1
 pkgver=1.82.0
-pkgrel=3
+pkgrel=4
 pkgdesc='Systems programming language (self-hosted, emits i486 code)'
 url='https://www.rust-lang.org/'
 arch=(i486)
@@ -22,8 +22,10 @@ makedepends=(cmake llvm19 ninja perl pkgconf python rust)
 provides=(cargo=$pkgver)
 options=(!debug !lto)
 _host=i686-unknown-linux-gnu
-source=(https://static.rust-lang.org/dist/rustc-$pkgver-src.tar.xz)
-sha256sums=('1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210')
+source=(https://static.rust-lang.org/dist/rustc-$pkgver-src.tar.xz
+        cpufeatures-i486-cpuid.patch)
+sha256sums=('1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210'
+            '303ec335655631aab387be082853d42c1ca00bef05e457ea7f26342fa73dae1f')
 
 prepare() {
   cd "rustc-$pkgver-src"
@@ -31,6 +33,25 @@ prepare() {
   grep -q '"pentium4"' "$spec" && grep -q 'max_atomic_width = Some(64)' "$spec"
   sed -i -e 's/"pentium4"/"i486"/' \
          -e 's/max_atomic_width = Some(64)/max_atomic_width = Some(32)/' "$spec"
+
+  # cpufeatures runs CPUID unconditionally; gate it on EFLAGS.ID so sha1/sha2
+  # in rustc and cargo fall back to soft code on CPUs without CPUID.
+  local cfdir
+  for cfdir in vendor/cpufeatures*/; do
+    patch -d "$cfdir" -p1 < "$srcdir/cpufeatures-i486-cpuid.patch"
+    python - "$cfdir" <<'PY'
+import hashlib, json, sys
+d = sys.argv[1]
+path = d + "/.cargo-checksum.json"
+with open(path) as f:
+    cs = json.load(f)
+for name in ("src/lib.rs", "src/x86.rs"):
+    with open(d + "/" + name, "rb") as f:
+        cs["files"][name] = hashlib.sha256(f.read()).hexdigest()
+with open(path, "w") as f:
+    json.dump(cs, f)
+PY
+  done
 
   cat > config.toml <<EOF
 change-id = 129295

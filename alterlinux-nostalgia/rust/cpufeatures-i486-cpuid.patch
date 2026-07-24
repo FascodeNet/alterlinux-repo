@@ -1,0 +1,60 @@
+--- a/src/x86.rs
++++ b/src/x86.rs
+@@ -53,11 +53,15 @@
+             __cpuid_count(leaf, sub_leaf)
+         }
+ 
+-        let cr = unsafe {
+-            [cpuid(1), cpuid_count(7, 0)]
+-        };
++        if !$crate::x86_has_cpuid() {
++            false
++        } else {
++            let cr = unsafe {
++                [cpuid(1), cpuid_count(7, 0)]
++            };
+ 
+-        $($crate::check!(cr, $tf) & )+ true
++            $($crate::check!(cr, $tf) & )+ true
++        }
+     }};
+ }
+ 
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -218,3 +218,35 @@
+         }
+     };
+ }
++
++/// Reports whether the CPUID instruction exists, by toggling EFLAGS.ID.
++/// Pre-Pentium CPUs (real i486) lack it; running CPUID there raises #UD.
++#[cfg(target_arch = "x86")]
++#[doc(hidden)]
++pub fn x86_has_cpuid() -> bool {
++    let toggled: u32;
++    let original: u32;
++    unsafe {
++        core::arch::asm!(
++            "pushfd",
++            "pop eax",
++            "mov ecx, eax",
++            "xor eax, 0x200000",
++            "push eax",
++            "popfd",
++            "pushfd",
++            "pop eax",
++            "push ecx",
++            "popfd",
++            out("eax") toggled,
++            out("ecx") original,
++        );
++    }
++    (toggled ^ original) & 0x0020_0000 != 0
++}
++
++#[cfg(target_arch = "x86_64")]
++#[doc(hidden)]
++pub fn x86_has_cpuid() -> bool {
++    true
++}

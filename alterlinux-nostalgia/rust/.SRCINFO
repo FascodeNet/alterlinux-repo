@@ -1,7 +1,7 @@
 pkgbase = rust
 	pkgdesc = Systems programming language (self-hosted, emits i486 code)
 	pkgver = 1.82.0
-	pkgrel = 3
+	pkgrel = 4
 	epoch = 1
 	url = https://www.rust-lang.org/
 	arch = i486
@@ -26,6 +26,8 @@ pkgbase = rust
 	options = !debug
 	options = !lto
 	source = https://static.rust-lang.org/dist/rustc-1.82.0-src.tar.xz
+	source = cpufeatures-i486-cpuid.patch
 	sha256sums = 1276a0bb8fa12288ba6fa96597d28b40e74c44257c051d3bc02c2b049bb38210
+	sha256sums = 303ec335655631aab387be082853d42c1ca00bef05e457ea7f26342fa73dae1f
 
 pkgname = rust
