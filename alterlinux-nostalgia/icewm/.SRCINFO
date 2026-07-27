@@ -8,7 +8,7 @@ pkgbase = icewm
 	arch = i686
 	arch = pentium4
 	license = LGPL-2.0-only
-	makedepends = asciidoctor
+	makedepends = asciidoctor>=2.0.26
 	makedepends = cmake
 	makedepends = xorg-mkfontscale
 	depends = alsa-lib

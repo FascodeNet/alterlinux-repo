@@ -10,7 +10,9 @@ url="https://ice-wm.org/"
 arch=('x86_64' 'i486' 'i686' 'pentium4')
 license=('LGPL-2.0-only')
 depends=('alsa-lib' 'imlib2' 'libsm' 'librsvg-og' 'libsndfile' 'libxcomposite' 'libxcursor' 'libxdamage' 'libxinerama' 'libxrandr')
-makedepends=('asciidoctor' 'cmake' 'xorg-mkfontscale')
+# The bound keeps out extra's asciidoctor 2.0.23, which lives in ruby 3.2
+# paths that archlinux32's own ruby 3.0.5 never loads.
+makedepends=('asciidoctor>=2.0.26' 'cmake' 'xorg-mkfontscale')
 optdepends=('perl: for icewm-menu-xrandr')
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/ice-wm/icewm/archive/refs/tags/${pkgver}.tar.gz"
         'static-position.patch')
