@@ -8,7 +8,6 @@ pkgbase = asciidoctor
 	checkdepends = ruby-bundler
 	checkdepends = ruby-coderay
 	checkdepends = ruby-concurrent
-	checkdepends = ruby-cucumber
 	checkdepends = ruby-erubi
 	checkdepends = ruby-haml
 	checkdepends = ruby-minitest

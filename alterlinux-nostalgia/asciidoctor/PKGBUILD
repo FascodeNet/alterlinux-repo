@@ -18,11 +18,12 @@ depends=(
 makedepends=(
   git
 )
+# ruby-cucumber is absent on archlinux32; its rake task rescues the LoadError,
+# so `rake test` runs without it and only the features task is skipped.
 checkdepends=(
     'ruby-bundler'
     'ruby-coderay'
     'ruby-concurrent'
-    'ruby-cucumber'
     'ruby-erubi'
     'ruby-haml'
     'ruby-minitest'
