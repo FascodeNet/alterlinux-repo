@@ -1,0 +1,6 @@
+[imagemagick]
+source = "github"
+github = "ImageMagick/ImageMagick"
+use_max_tag = true
+from_pattern = '^(\d+\.\d+\.\d+)-(\d+)$'
+to_pattern = '\1.\2'

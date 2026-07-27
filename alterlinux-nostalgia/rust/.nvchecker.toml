@@ -1,0 +1,6 @@
+# rust bootstraps with the previous rust (makedepends=rust), so it follows
+# archlinux32 instead of upstream: their stepping keeps the N-1 chain intact.
+[rust]
+source = "regex"
+url = "https://www.archlinux32.org/packages/pentium4/extra/rust/"
+regex = 'itemprop="version" content="(?:\d+:)?([^-"]+)'

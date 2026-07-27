@@ -1,0 +1,4 @@
+[linux-nost]
+source = "archpkg"
+archpkg = "linux"
+strip_release = true
