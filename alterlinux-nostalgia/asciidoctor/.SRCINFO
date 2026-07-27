@@ -18,6 +18,7 @@ pkgbase = asciidoctor
 	checkdepends = ruby-tilt
 	makedepends = git
 	depends = ruby
+	depends = ruby-digest=3.0.5
 	options = !emptydirs
 	source = git+https://github.com/asciidoctor/asciidoctor#tag=v2.0.26
 	sha512sums = 073de38f7a1238b23632c6da8da2a6b0960a0c92bfe5f1258082661f7a1d4ebd0c3a6f94a67fc68311fcef032cb4670ec0739fcfb75d4472b76605a434a3aaa4

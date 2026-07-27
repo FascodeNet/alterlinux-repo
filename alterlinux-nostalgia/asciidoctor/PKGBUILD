@@ -11,8 +11,13 @@ pkgdesc='An implementation of AsciiDoc in Ruby'
 arch=('any')
 url='https://asciidoctor.org'
 license=('MIT')
+# Our ruby-digest fills in digest.so, which rubygems needs for `gem build`.
+# The version pin matters: the chroot lists this repo after archlinux32's
+# extra, whose own ruby-digest 3.1.1 wins the name but installs into the
+# wrong arch directory.
 depends=(
   ruby
+  'ruby-digest=3.0.5'
 )
 # ruby-rdoc is unusable on archlinux32 i486; install docs are skipped instead
 makedepends=(
