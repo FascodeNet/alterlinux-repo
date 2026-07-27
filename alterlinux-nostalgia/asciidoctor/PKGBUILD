@@ -23,21 +23,9 @@ depends=(
 makedepends=(
   git
 )
-# ruby-cucumber is absent on archlinux32; its rake task rescues the LoadError,
-# so `rake test` runs without it and only the features task is skipped.
-checkdepends=(
-    'ruby-bundler'
-    'ruby-coderay'
-    'ruby-concurrent'
-    'ruby-erubi'
-    'ruby-haml'
-    'ruby-minitest'
-    'ruby-nokogiri'
-    'ruby-rake'
-    'ruby-rouge'
-    'ruby-slim'
-    'ruby-tilt'
-)
+# check() is dropped: archlinux32's newer gem packages (ruby-rake 13.3.1,
+# ruby-minitest 5.26.1) install under ruby 3.2 paths that its own ruby 3.0.5
+# never searches, so the test dependencies cannot even load.
 options=('!emptydirs')
 source=("git+https://github.com/asciidoctor/asciidoctor#tag=v${pkgver}")
 sha512sums=('073de38f7a1238b23632c6da8da2a6b0960a0c92bfe5f1258082661f7a1d4ebd0c3a6f94a67fc68311fcef032cb4670ec0739fcfb75d4472b76605a434a3aaa4')
@@ -97,16 +85,6 @@ build() {
       -iname "gem_make.out" \
     \) \
     -delete
-}
-
-check() {
-  cd "${pkgname}"
-
-  local _gemdir="$(gem env gemdir)"
-
-  # Exclude two tests that require unpackaged Gem open-uri-cached
-  GEM_HOME="tmp_install/${_gemdir}" rake test \
-    TESTOPTS="--exclude='/test_should_cache_remote_SVG_when_allow_uri_read_cache_uri_and_inline_option_are_set|test_should_cache_remote_image_when_allow_uri_read_cache_uri_and_data_uri_are_set/'"
 }
 
 package() {

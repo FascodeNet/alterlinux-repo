@@ -5,17 +5,6 @@ pkgbase = asciidoctor
 	url = https://asciidoctor.org
 	arch = any
 	license = MIT
-	checkdepends = ruby-bundler
-	checkdepends = ruby-coderay
-	checkdepends = ruby-concurrent
-	checkdepends = ruby-erubi
-	checkdepends = ruby-haml
-	checkdepends = ruby-minitest
-	checkdepends = ruby-nokogiri
-	checkdepends = ruby-rake
-	checkdepends = ruby-rouge
-	checkdepends = ruby-slim
-	checkdepends = ruby-tilt
 	makedepends = git
 	depends = ruby
 	depends = ruby-digest=3.0.5
