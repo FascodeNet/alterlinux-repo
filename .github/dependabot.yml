@@ -1,0 +1,8 @@
+# Keeps the SHA-pinned actions (Kamisato, shellcheck) current with update PRs
+# instead of tracking mutable branches.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
