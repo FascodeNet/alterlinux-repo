@@ -11,13 +11,16 @@ license=('GPL-3.0-or-later')
 depends=(
     # Calamares runtime
     'kcoreaddons'
+    'kcrash'
     'kpmcore'
     'libpwquality'
+    'parted'
     'qt6-declarative'
     'qt6-svg'
     'yaml-cpp'
     'python'
     # Runtime tools used by the modules AlterLinux enables
+    'rsync'
     'squashfs-tools'
     'ckbcomp'
     'polkit'
@@ -71,6 +74,7 @@ build() {
         -DSKIP_MODULES="${_skip_modules[*]}" \
         -DBUILD_TESTING=OFF \
         -DKDE_INSTALL_SYSCONFDIR=/etc \
+        -DPython_EXECUTABLE=/usr/bin/python3 \
         -Wno-dev
     cmake --build build
 }
