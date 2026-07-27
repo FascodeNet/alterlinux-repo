@@ -1,8 +1,8 @@
 pkgbase = alterlinux-settings-xfce-git
-	pkgdesc = AlterLinux xfce Settings
-	pkgver = 1.0
+	pkgdesc = AlterLinux Xfce desktop default settings
+	pkgver = 2.r2.029d4cb
 	pkgrel = 1
-	url = https:/fascode.net
+	url = https://github.com/FascodeNet/alterlinux-settings-xfce
 	arch = any
 	makedepends = git
 	provides = alterlinux-settings-xfce
