@@ -6,6 +6,10 @@
             {
                 "name": "alterlinux",
                 "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
+            },
+            {
+                "name": "alterlinux-aur",
+                "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
             }
         ]
     }
