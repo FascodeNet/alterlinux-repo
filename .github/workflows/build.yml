@@ -3,7 +3,7 @@ name: Build and publish
 on:
   push:
     branches: [master]
-    paths: ["alterlinux/**", "alterlinux-aur/**", "alterlinux-nostalgia/**"]
+    paths: ["alterlinux/**", "alterlinux-aur/**", "alterlinux-nostalgia/**", "extern/**"]
   workflow_dispatch:
     inputs:
       packages:
@@ -47,12 +47,12 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+      - uses: Hayao0819/Kamisato/actions/install@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           ayaka: "true"
-          version: 142e661f0679279b48cd02859d2a1b50b09b0c63
+          version: ad6854ae11d96ce12a28c44f42d57594ffe795d0
       - id: gen
-        uses: Hayao0819/Kamisato/actions/plan@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+        uses: Hayao0819/Kamisato/actions/plan@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           server: ${{ vars.AYATO_URL }}
           packages: ${{ github.event.inputs.packages }}
@@ -77,12 +77,12 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: Hayao0819/Kamisato/actions/install@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+      - uses: Hayao0819/Kamisato/actions/install@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           ayaka: "true"
-          version: 142e661f0679279b48cd02859d2a1b50b09b0c63
+          version: ad6854ae11d96ce12a28c44f42d57594ffe795d0
       - id: bump
-        uses: Hayao0819/Kamisato/actions/bump@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+        uses: Hayao0819/Kamisato/actions/bump@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           bumps: ${{ needs.plan.outputs.bumps }}
 
@@ -108,12 +108,12 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+      - uses: Hayao0819/Kamisato/actions/install@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           ayaka: "true"
-          version: 142e661f0679279b48cd02859d2a1b50b09b0c63
+          version: ad6854ae11d96ce12a28c44f42d57594ffe795d0
       - name: Build and publish packages
-        uses: Hayao0819/Kamisato/actions/build@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+        uses: Hayao0819/Kamisato/actions/build@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           server: ${{ vars.AYATO_URL }}
           repo: ${{ matrix.repo }}
@@ -140,12 +140,12 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+      - uses: Hayao0819/Kamisato/actions/install@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           ayaka: "true"
-          version: 142e661f0679279b48cd02859d2a1b50b09b0c63
+          version: ad6854ae11d96ce12a28c44f42d57594ffe795d0
       - name: Prune removed packages
-        uses: Hayao0819/Kamisato/actions/prune@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+        uses: Hayao0819/Kamisato/actions/prune@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
         with:
           server: ${{ vars.AYATO_URL }}
           repo: ${{ matrix.repo }}

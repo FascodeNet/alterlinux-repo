@@ -14,7 +14,7 @@ permissions:
 # .SRCINFO is maintained there.
 jobs:
   srcinfo:
-    uses: Hayao0819/Kamisato/.github/workflows/srcinfo-check.yml@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+    uses: Hayao0819/Kamisato/.github/workflows/srcinfo-check.yml@ad6854ae11d96ce12a28c44f42d57594ffe795d0 # master
     with:
       repos: alterlinux alterlinux-nostalgia
-      version: 142e661f0679279b48cd02859d2a1b50b09b0c63
+      version: ad6854ae11d96ce12a28c44f42d57594ffe795d0
