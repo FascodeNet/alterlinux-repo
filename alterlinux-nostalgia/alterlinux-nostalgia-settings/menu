@@ -1,0 +1,13 @@
+prog "Terminal" - xterm
+separator
+menuprog "Applications" - icewm-menu-fdo
+separator
+menu "System" - {
+    prog "Process Monitor" - xterm -e top
+    prog "Disk Usage" - xterm -e sh -c "df -h; read x"
+}
+menu "Settings" - {
+    prog "Reload IceWM" - icesh restart
+}
+separator
+prog "Log Out" - pkill icewm

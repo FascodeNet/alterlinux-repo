@@ -1,0 +1,37 @@
+Theme="nostalgia/default.theme"
+
+TitleFontNameXft="DejaVu Sans:size=10"
+MenuFontNameXft="DejaVu Sans:size=10"
+NormalTaskBarFontNameXft="DejaVu Sans:size=9"
+ActiveTaskBarFontNameXft="DejaVu Sans:size=9:bold"
+NormalButtonFontNameXft="DejaVu Sans:size=9"
+ActiveButtonFontNameXft="DejaVu Sans:size=9:bold"
+ClockFontNameXft="DejaVu Sans:size=9"
+ToolTipFontNameXft="DejaVu Sans:size=9"
+
+TaskBarAtTop=0
+TaskBarDoubleHeight=0
+TaskBarShowStartMenu=1
+TaskBarShowWorkspaces=0
+TaskBarShowWindowListMenu=0
+TaskBarShowShowDesktopButton=0
+TaskBarShowClock=1
+TaskBarClockLeds=0
+TaskBarShowMailboxStatus=0
+TaskBarShowCPUStatus=0
+TaskBarShowNetStatus=0
+TaskBarShowMEMStatus=0
+TaskBarShowAPMStatus=0
+TimeFormat="%H:%M"
+
+ShowMoveSizeStatus=0
+QuickSwitch=1
+MenuMouseTracking=1
+ShowWindowList=0
+ShowSettingsMenu=0
+ShowThemesMenu=0
+ShowFocusModeMenu=0
+ShowLogoutMenu=0
+ShowAbout=0
+ShowHelp=0
+ShowRun=0
