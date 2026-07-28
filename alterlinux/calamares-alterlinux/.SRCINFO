@@ -1,6 +1,6 @@
 pkgbase = calamares-alterlinux
 	pkgdesc = Calamares installer bundled with AlterLinux branding, configuration and modules
-	pkgver = 3.4.2.r213.6dfe79e
+	pkgver = 3.4.2.r308.f79ad1e
 	pkgrel = 1
 	url = https://github.com/FascodeNet/calamares-extensions
 	arch = x86_64

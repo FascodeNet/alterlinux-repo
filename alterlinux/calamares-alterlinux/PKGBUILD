@@ -2,7 +2,7 @@
 
 pkgname=calamares-alterlinux
 _calamares_ver=3.4.2
-pkgver=3.4.2.r213.6dfe79e
+pkgver=3.4.2.r308.f79ad1e
 pkgrel=1
 pkgdesc="Calamares installer bundled with AlterLinux branding, configuration and modules"
 arch=('x86_64')
