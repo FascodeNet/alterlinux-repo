@@ -1,0 +1,5 @@
+[asciidoctor]
+source = "github"
+github = "asciidoctor/asciidoctor"
+use_max_tag = true
+prefix = "v"

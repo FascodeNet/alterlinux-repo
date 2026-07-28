@@ -1,0 +1,6 @@
+# Watches the embedded calamares tarball's upstream (now on Codeberg); the
+# VCS pkgver 3.4.2.rN.hash sorts below the next 3.4.x release.
+[calamares-alterlinux]
+source = "git"
+git = "https://codeberg.org/Calamares/calamares.git"
+prefix = "v"

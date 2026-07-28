@@ -1,0 +1,6 @@
+# go.dev/dl lists stable releases newest-first; the GitHub tags feed would
+# surface rc tags as the max.
+[go]
+source = "regex"
+url = "https://go.dev/dl/?mode=json"
+regex = '"version": ?"go([0-9.]+)"'

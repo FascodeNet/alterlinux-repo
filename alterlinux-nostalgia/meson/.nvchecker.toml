@@ -1,0 +1,4 @@
+# PyPI reports the latest stable; GitHub's max tag would be an rc.
+[meson]
+source = "pypi"
+pypi = "meson"

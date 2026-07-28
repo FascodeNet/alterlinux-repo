@@ -1,0 +1,6 @@
+# Pinned to the 19 series for rust 1.82. The releases API lists newest first,
+# so the first plain 19.x tag is that series' latest.
+[llvm19]
+source = "regex"
+url = "https://api.github.com/repos/llvm/llvm-project/releases?per_page=100"
+regex = '"tag_name": ?"llvmorg-(19\.\d+\.\d+)"'

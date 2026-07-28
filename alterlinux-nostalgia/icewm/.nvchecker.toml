@@ -1,0 +1,5 @@
+# releases/latest, not max tag: the tag list contains non-version tags like
+# "tag-branch-merge" that win the version comparison.
+[icewm]
+source = "github"
+github = "ice-wm/icewm"
