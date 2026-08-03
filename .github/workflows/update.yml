@@ -17,6 +17,6 @@ concurrency:
 
 jobs:
   update:
-    uses: Hayao0819/Kamisato/.github/workflows/upstream-update.yml@142e661f0679279b48cd02859d2a1b50b09b0c63 # master
+    uses: Hayao0819/Kamisato/.github/workflows/upstream-update.yml@b23366f68481af835fc0f624240712dd88c7cf78 # master
     with:
       version: cdec8bde52dad202ac6e70ec734ee8221fd4e5cc
