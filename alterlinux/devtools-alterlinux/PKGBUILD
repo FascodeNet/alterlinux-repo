@@ -4,7 +4,9 @@ pkgname=devtools-alterlinux
 pkgver=2.e289c85
 pkgrel=1
 pkgdesc='Extra tools for alterlinux package maintainers'
-arch=('x86_64' 'i486' 'i686' 'pentium4')
+# x86_64 only: package() concatenates devtools' multilib.conf, which exists
+# only on 64-bit; the tool builds 32-bit chroots from an x86_64 host anyway.
+arch=('x86_64')
 url='https://github.com/FascodeNet/devtools-alterlinux'
 license=('GPL')
 depends=('devtools')
