@@ -7,7 +7,14 @@
                 "name": "alterlinux-aur",
                 "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
             }
-        ]
+        ],
+        "arches": [
+            "x86_64",
+            "pentium4",
+            "i686",
+            "i486"
+        ],
+        "image": "ghcr.io/hayao0819/archlinux:$arch"
     },
     "installpkgs": {
         "files": [],
