@@ -82,7 +82,7 @@ jobs:
           ayaka: "true"
           version: b23366f68481af835fc0f624240712dd88c7cf78
       - id: bump
-        uses: Hayao0819/Kamisato/actions/bump@b23366f68481af835fc0f624240712dd88c7cf78 # master
+        uses: Hayao0819/Kamisato/actions/bump@3083262ff7fec53f8013f84ee1b442d1cc19f2bc # master
         with:
           bumps: ${{ needs.plan.outputs.bumps }}
 
