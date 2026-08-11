@@ -1,7 +1,7 @@
 pkgbase = fontconfig
 	pkgdesc = Library for configuring and customizing font access
 	pkgver = 2.18.3
-	pkgrel = 1
+	pkgrel = 1.1
 	epoch = 2
 	url = https://www.freedesktop.org/wiki/Software/fontconfig/
 	install = fontconfig.install
