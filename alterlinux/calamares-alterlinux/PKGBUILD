@@ -104,6 +104,8 @@ package() {
 
     # 5) Supporting data
     install -Dm755 "${_ext}/data/run-scripts" "${pkgdir}/etc/calamares/run-scripts"
+    install -Dm755 "${_ext}/data/restore-target-kernel" \
+        "${pkgdir}/etc/calamares/restore-target-kernel"
     install -Dm644 "${_ext}/data/alter-icon.svg" \
         "${pkgdir}/usr/share/icons/hicolor/scalable/apps/calamares-alterlinux.svg"
     install -Dm644 "${_ext}/data/49-nopasswd-calamares.rules" \
