@@ -1,0 +1,66 @@
+pkgbase = colloid-gtk-theme-git
+	pkgdesc = Gtk theme for Linux
+	pkgver = 2025.07.31.r15.gf69f819
+	pkgrel = 1
+	url = https://github.com/vinceliuice/Colloid-gtk-theme
+	arch = any
+	license = GPL-3.0-or-later
+	makedepends = git
+	makedepends = sassc
+	options = !strip
+	source = git+https://github.com/vinceliuice/Colloid-gtk-theme.git
+	sha256sums = SKIP
+
+pkgname = colloid-gtk-theme-default-git
+	pkgdesc = Gtk theme for Linux (default accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-default
+	conflicts = colloid-gtk-theme-default
+
+pkgname = colloid-gtk-theme-purple-git
+	pkgdesc = Gtk theme for Linux (purple accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-purple
+	conflicts = colloid-gtk-theme-purple
+
+pkgname = colloid-gtk-theme-pink-git
+	pkgdesc = Gtk theme for Linux (pink accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-pink
+	conflicts = colloid-gtk-theme-pink
+
+pkgname = colloid-gtk-theme-red-git
+	pkgdesc = Gtk theme for Linux (red accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-red
+	conflicts = colloid-gtk-theme-red
+
+pkgname = colloid-gtk-theme-orange-git
+	pkgdesc = Gtk theme for Linux (orange accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-orange
+	conflicts = colloid-gtk-theme-orange
+
+pkgname = colloid-gtk-theme-yellow-git
+	pkgdesc = Gtk theme for Linux (yellow accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-yellow
+	conflicts = colloid-gtk-theme-yellow
+
+pkgname = colloid-gtk-theme-green-git
+	pkgdesc = Gtk theme for Linux (green accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-green
+	conflicts = colloid-gtk-theme-green
+
+pkgname = colloid-gtk-theme-teal-git
+	pkgdesc = Gtk theme for Linux (teal accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-teal
+	conflicts = colloid-gtk-theme-teal
+
+pkgname = colloid-gtk-theme-grey-git
+	pkgdesc = Gtk theme for Linux (grey accent)
+	optdepends = gtk-engine-murrine: GTK2 theme support
+	provides = colloid-gtk-theme-grey
+	conflicts = colloid-gtk-theme-grey

@@ -1,0 +1,51 @@
+# Maintainer : Yamada Hayao <shun819.mail@gmail.com>
+
+# Split per accent colour. Upstream ships all nine in one package (201 MiB),
+# which is dead weight in an ISO that only ever selects one.
+
+_pkgname=colloid-gtk-theme
+_accents=(default purple pink red orange yellow green teal grey)
+pkgbase=$_pkgname-git
+pkgname=("${_accents[@]/#/$_pkgname-}")
+pkgname=("${pkgname[@]/%/-git}")
+pkgver=2025.07.31.r15.gf69f819
+pkgrel=1
+pkgdesc='Gtk theme for Linux'
+arch=('any')
+url='https://github.com/vinceliuice/Colloid-gtk-theme'
+license=('GPL-3.0-or-later')
+makedepends=('git' 'sassc')
+options=('!strip')
+source=("git+$url.git")
+sha256sums=('SKIP')
+
+pkgver() {
+    cd Colloid-gtk-theme
+    git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+    cd Colloid-gtk-theme
+    # install.sh wipes the destination for other accents otherwise.
+    sed -i 's/clean_theme && install_theme/install_theme/g' install.sh
+}
+
+_install_accent() {
+    local _accent="$1"
+
+    cd "$srcdir/Colloid-gtk-theme"
+    install -d "$pkgdir/usr/share/themes"
+    ./install.sh -t "$_accent" -d "$pkgdir/usr/share/themes"
+    ./install.sh -t "$_accent" -s compact -d "$pkgdir/usr/share/themes"
+}
+
+for _accent in "${_accents[@]}"; do
+    eval "package_${_pkgname}-${_accent}-git() {
+        pkgdesc='Gtk theme for Linux (${_accent} accent)'
+        optdepends=('gtk-engine-murrine: GTK2 theme support')
+        provides=(\"${_pkgname}-${_accent}\")
+        conflicts=(\"${_pkgname}-${_accent}\")
+        _install_accent ${_accent}
+    }"
+done
+unset _accent
