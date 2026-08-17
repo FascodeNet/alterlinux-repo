@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version: "1.x"
-      - uses: Hayao0819/Kamisato/actions/install@b23366f68481af835fc0f624240712dd88c7cf78 # master
+      - uses: Hayao0819/Kamisato/actions/install@3083262ff7fec53f8013f84ee1b442d1cc19f2bc # master
         with:
           ayaka: "true"
           source_dir: ${{ github.workspace }}/kamisato-src
