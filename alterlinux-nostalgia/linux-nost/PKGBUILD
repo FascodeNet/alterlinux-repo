@@ -7,7 +7,7 @@
 # on i486 via source_i486. Config is tuned for low-memory old hardware.
 
 pkgbase=linux-nost
-pkgver=7.1.8.arch1
+pkgver=7.1.9.arch1
 pkgrel=1
 pkgdesc='Linux for nostalgic 32-bit machines'
 url='https://github.com/archlinux/linux'
@@ -49,8 +49,8 @@ source_i686=(config.i686)
 source_pentium4=(config.pentium4)
 # b2sums pin the exact upstream tarball/patch, so verify by hash only (the build
 # containers lack the kernel PGP keys, and this keeps parity with the other pkgs).
-b2sums=('84b59e5572d91f5ea1bb603aa7691851bd9549e1bf18a6bec8e27eb8a6e2de2e33da2ad3e3aad501c793e9756e70245a16545e76b65a44ee52b33ccf5c3dd8e7'
-        '308952977c15ac3ad976ff1d99d0d186814d4b03e1c8512fc3a4c0ac1ecce3f74be8f3900a7fd286492d4f930bedc089674bf713a278fa80c35413e0e6339f97'
+b2sums=('873b4d4426295e291118481d911dc2bc67588bb9b1025c19faf7c2a3971cad439efce1c4f244a40a2983d9e7fe405adfb880c0df92ff2e616d0880178129a551'
+        '6e7b73dbbdb66a414c634df2e7b2d248aa6071f04c4f2fe52346441ab490192894ee903ba72b8e47ab25c511e4dac14cf824f175f183687b1fd61bd087209afb'
         '165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40')
 b2sums_i486=('a60634d24ff4dc47ab8b2bab5d45a1a620443bef6999eccff15ae67dbf8353bc6c29c5078c7568cfa55aaf70bc7beb1912cb025aa2f189c1e182da37bd66a034'
              'ed74c5825e4a9c476d166a9e0a989b376292e60d437b27438a423585e0f77a56f230ba04d73382a5e01156da3550d20580ab778edf9d899e109f812a16ab5056'
