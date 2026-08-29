@@ -7,7 +7,7 @@
 # kernel.org tree. Config is tuned for low-memory old hardware.
 
 pkgbase=linux-nost-lts
-pkgver=6.18.47
+pkgver=6.18.48
 pkgrel=1
 pkgdesc='LTS Linux for nostalgic 32-bit machines'
 url='https://www.kernel.org/'
@@ -42,7 +42,7 @@ source_i686=(config.i686)
 source_pentium4=(config.pentium4)
 # b2sums pin the exact upstream tarball, so verify by hash only (the build
 # containers lack the kernel PGP keys, and this keeps parity with the other pkgs).
-b2sums=('46d321c379d33f7ca35826cf99e4c49ac1e92aa9053790d904059d7af398403332c7cfc354433a51f394244b14bb838e2a3559dd320b301d109a11ffec7deacb'
+b2sums=('56ad5161e34e8bf974d4c4e5bef10df67b618aa5f8e324f2a7f26722c022ebbf10c62d078c70692356a78e73577410e0334a1544109a72489626918df8493357'
         '165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40')
 b2sums_i486=('8e8db0219dabd4f4db16c52c95491cdc321841e2fe9256b9aef442de2b212884e318ca1aa8f507291560744422111758ffc57c4ed5b8ab8f1f15ba09c5680bb7')
 b2sums_i686=('fa8f1c8f10f7a19983197472c86c391c82eff3af6c0e73790ca5a84a8e917af6d5a0e144373c7d6046d46cf7660945e135574ac90985dc861b7fb7a7bc57b745')
