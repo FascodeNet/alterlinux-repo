@@ -1,0 +1,37 @@
+# Maintainer: hayao <shun819.mail at gmail.com>
+
+# archlinux32's kcoreaddons is still KF5 (5.105.0, Qt5), so Calamares 3.4 cannot
+# find KF6CoreAddons. This ships the KF6 build under its own package name: the
+# two install disjoint files (libKF6CoreAddons.so.6 and /usr/lib/cmake/KF6*),
+# so they coexist and the KF5 dependents keep working.
+# Pinned to 6.7.0 to match archlinux32's extra-cmake-modules.
+
+pkgname=kcoreaddons6
+_pkgname=kcoreaddons
+pkgver=6.7.0
+pkgrel=1
+pkgdesc='KF6 addons to QtCore'
+# pentium4 only for now: i686's qt6-base 6.7.2 still links icu 75 and cannot
+# run qtpaths, so ECM cannot configure anything there.
+arch=(pentium4)
+url='https://community.kde.org/Frameworks'
+license=(LGPL-2.0-or-later)
+depends=(gcc-libs glibc qt6-base)
+makedepends=(extra-cmake-modules qt6-declarative qt6-tools)
+source=("https://download.kde.org/stable/frameworks/${pkgver%.*}/$_pkgname-$pkgver.tar.xz")
+sha256sums=('48511e9dab1f2e80b3c4822bb87c2e981186de3b8977d92082d34d003b1283c5')
+
+build() {
+  cmake -S "$_pkgname-$pkgver" -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBEXECDIR=lib \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_QCH=OFF
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 "$_pkgname-$pkgver/LICENSES/LGPL-2.0-or-later.txt" \
+    -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

@@ -1,0 +1,17 @@
+pkgbase = kcoreaddons6
+	pkgdesc = KF6 addons to QtCore
+	pkgver = 6.7.0
+	pkgrel = 1
+	url = https://community.kde.org/Frameworks
+	arch = pentium4
+	license = LGPL-2.0-or-later
+	makedepends = extra-cmake-modules
+	makedepends = qt6-declarative
+	makedepends = qt6-tools
+	depends = gcc-libs
+	depends = glibc
+	depends = qt6-base
+	source = https://download.kde.org/stable/frameworks/6.7/kcoreaddons-6.7.0.tar.xz
+	sha256sums = 48511e9dab1f2e80b3c4822bb87c2e981186de3b8977d92082d34d003b1283c5
+
+pkgname = kcoreaddons6
