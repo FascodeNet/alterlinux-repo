@@ -15,7 +15,7 @@ permissions:
 # our own directories are actually checked here.
 jobs:
   srcinfo:
-    uses: Hayao0819/Kamisato/.github/workflows/srcinfo-check.yml@b23366f68481af835fc0f624240712dd88c7cf78 # master
+    uses: Hayao0819/Kamisato/.github/workflows/srcinfo-check.yml@b0f4d89743f68070e72802533a916e56e1e921bc # master
     with:
       repos: alterlinux alterlinux-aur alterlinux-nostalgia
-      version: b23366f68481af835fc0f624240712dd88c7cf78
+      version: b0f4d89743f68070e72802533a916e56e1e921bc
