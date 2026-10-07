@@ -2,7 +2,7 @@
 
 pkgname=calamares-alterlinux
 _calamares_ver=3.4.2
-pkgver=3.4.2.r308.f79ad1e
+pkgver=3.4.3
 pkgrel=1
 pkgdesc="Calamares installer bundled with AlterLinux branding, configuration and modules"
 # i686 is out: its qt6-base 6.7.2 still links icu 75 while archlinux32 ships
@@ -50,10 +50,8 @@ source=(
     "${_srcdir}.tar.gz::https://codeberg.org/Calamares/calamares/releases/download/v${_calamares_ver}/${_srcdir}.tar.gz"
     "git+https://github.com/FascodeNet/${_extname}.git"
 )
-sha256sums=(
-    '733bbbb00dc9f84874bd5c22960952f317ea2537565431179fa2152b2fbfdccc'
-    'SKIP'
-)
+sha256sums=('733bbbb00dc9f84874bd5c22960952f317ea2537565431179fa2152b2fbfdccc'
+            'SKIP')
 
 pkgver() {
     cd "${srcdir}/${_extname}"

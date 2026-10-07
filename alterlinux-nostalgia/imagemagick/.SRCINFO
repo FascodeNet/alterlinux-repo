@@ -1,6 +1,6 @@
 pkgbase = imagemagick
 	pkgdesc = An image viewing/manipulation program
-	pkgver = 7.1.2.30
+	pkgver = 7.1.2.32
 	pkgrel = 1
 	url = https://www.imagemagick.org/
 	arch = i486
@@ -72,8 +72,8 @@ pkgbase = imagemagick
 	backup = etc/ImageMagick-7/type.xml
 	backup = etc/ImageMagick-7/type-dejavu.xml
 	backup = etc/ImageMagick-7/type-ghostscript.xml
-	source = git+https://github.com/ImageMagick/ImageMagick#tag=7.1.2-30
-	b2sums = 86337c801580bc4d6b6f3a9b3439c840ce2b0fb1762afca75e7f762523dbc6d31bbcae745a6974af9018703a567c4ddb9100f6d7727fbd6307a8c9c39333e683
+	source = git+https://github.com/ImageMagick/ImageMagick#tag=7.1.2-32
+	b2sums = fa2fd4fc86222b4808f2a1aa6af5bbcad34f32b39b0eb4d75c82c23876254f88bb970773b7ff2441311c1af67a9aee0e37319de13d2b2fa8628eeb381496baaf
 	makedepends_i486 = librsvg-og
 	optdepends_i686 = libjxl: JPEG XL support
 	makedepends_i686 = librsvg
