@@ -3,7 +3,7 @@ name: Build and publish
 on:
   push:
     branches: [master]
-    paths: ["alterlinux/**", "alterlinux-aur/**", "alterlinux-nostalgia/**", "extern/**"]
+    paths: ["alterlinux/**", "alterlinux-aur/**", "alterlinux-nostalgia/**", "extern/**", ".github/workflows/build.yml", ".github/scripts/build-matrix.sh"]
   workflow_dispatch:
     inputs:
       packages:
@@ -52,12 +52,24 @@ jobs:
           ayaka: "true"
           version: b0f4d89743f68070e72802533a916e56e1e921bc
       - id: gen
-        uses: Hayao0819/Kamisato/actions/plan@b0f4d89743f68070e72802533a916e56e1e921bc # master
-        with:
-          server: ${{ vars.AYATO_URL }}
-          packages: ${{ github.event.inputs.packages }}
-          all: ${{ github.event.inputs.all }}
-          workers: 4
+        env:
+          IN_SERVER: ${{ vars.AYATO_URL }}
+          IN_PACKAGES: ${{ github.event.inputs.packages }}
+          IN_ALL: ${{ github.event.inputs.all }}
+        run: |
+          set -euo pipefail
+          args=(--format json --workers 4)
+          if [ -n "$IN_SERVER" ]; then
+            args+=(--server "$IN_SERVER")
+          fi
+          if [ "$IN_ALL" = "true" ]; then
+            args+=(--all)
+          fi
+          if [ -n "$IN_PACKAGES" ]; then
+            args+=(--packages "$IN_PACKAGES")
+          fi
+          ayaka ci matrix "${args[@]}" >plan.json
+          bash .github/scripts/build-matrix.sh plan.json >>"$GITHUB_OUTPUT"
 
   # Cascaded rebuilds carry no source change of their own, so their pkgrel is
   # bumped and pushed before the builds; the build jobs check out that commit.

@@ -13,14 +13,15 @@ jobs:
           path: kamisato-src
       - uses: actions/setup-go@v7
         with:
-          go-version: "1.x"
+          go-version-file: kamisato-src/go.mod
+          cache-dependency-path: kamisato-src/go.sum
       - uses: Hayao0819/Kamisato/actions/install@b0f4d89743f68070e72802533a916e56e1e921bc # master
         with:
           ayaka: "true"
           source_dir: ${{ github.workspace }}/kamisato-src
-      - name: Verify ayaka is installed with the container executor
+      - name: Verify ayaka is installed with the build backend option
         run: |
-          set -e
-          which ayaka
-          ayaka build --help | grep -- --executor
+          set -euo pipefail
+          command -v ayaka
+          ayaka build --help | grep -- --backend
           echo "install action OK"

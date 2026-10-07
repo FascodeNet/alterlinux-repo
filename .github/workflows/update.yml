@@ -17,6 +17,19 @@ concurrency:
 
 jobs:
   update:
-    uses: Hayao0819/Kamisato/.github/workflows/upstream-update.yml@b0f4d89743f68070e72802533a916e56e1e921bc # master
-    with:
-      version: cdec8bde52dad202ac6e70ec734ee8221fd4e5cc
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install tooling
+        run: pacman -Syu --noconfirm base-devel git go sudo jq pacman-contrib github-cli
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: Hayao0819/Kamisato/actions/install@b0f4d89743f68070e72802533a916e56e1e921bc # master
+        with:
+          ayaka: "true"
+          version: b0f4d89743f68070e72802533a916e56e1e921bc
+      - uses: ./.github/actions/update
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
