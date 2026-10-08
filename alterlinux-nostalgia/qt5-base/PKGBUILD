@@ -5,7 +5,7 @@ pkgbase=qt5-base
 pkgname=(qt5-base qt5-xcb-private-headers)
 _basever=5.15.19
 pkgver=5.15.19+kde+r96
-pkgrel=1.2
+pkgrel=1.3
 _commit=fbed962c3195ab3952fa54d40e012ad1a4fdc42b
 arch=(i486)
 options=(!lto)
@@ -14,7 +14,7 @@ license=('GPL3' 'LGPL3' 'FDL' 'custom')
 pkgdesc='A cross-platform application and UI framework'
 depends=('libjpeg-turbo' 'xcb-util-keysyms' 'xcb-util-renderutil' 'libgl' 'fontconfig' 'harfbuzz' 'xdg-utils'
          'shared-mime-info' 'xcb-util-wm' 'libxrender' 'libxi' 'sqlite' 'xcb-util-image' 'mesa'
-         'tslib' 'libinput' 'libxkbcommon-x11' 'libproxy' 'libcups' 'double-conversion' 'md4c')
+         'tslib' 'libinput' 'libxkbcommon-x11' 'libproxy' 'libcups' 'double-conversion' 'md4c' 'libxml2-legacy')
 makedepends=('mariadb-libs' 'unixodbc' 'postgresql-libs' 'alsa-lib' 'gst-plugins-base-libs'
              'gtk3' 'libpulse' 'cups' 'freetds' 'vulkan-headers' 'git')
 optdepends=('qt5-svg: to use SVG icon themes'

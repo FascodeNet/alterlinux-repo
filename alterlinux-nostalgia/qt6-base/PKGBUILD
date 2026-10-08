@@ -7,7 +7,7 @@ pkgname=(qt6-base
          qt6-xcb-private-headers)
 _pkgver=6.11.2
 pkgver=${_pkgver/-/}
-pkgrel=3.1
+pkgrel=3.2
 arch=(i486)
 url='https://www.qt.io'
 license=(GPL-3.0-only
@@ -42,6 +42,7 @@ depends=(brotli
          libxcb
          libxkbcommon
          libxkbcommon-x11
+         libxml2-legacy
          md4c
          mesa
          mtdev
