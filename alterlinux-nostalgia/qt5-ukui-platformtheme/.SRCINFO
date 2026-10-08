@@ -1,0 +1,19 @@
+pkgbase = qt5-ukui-platformtheme
+	pkgdesc = The UKUI platform theme for qt5 QPA
+	pkgver = 1.0.8
+	pkgrel = 18
+	url = https://github.com/ukui/qt5-ukui-platformtheme
+	arch = i486
+	groups = ukui
+	license = GPL
+	makedepends = qt5-tools
+	depends = dconf
+	depends = gsettings-qt
+	depends = kwayland
+	depends = kwindowsystem
+	depends = libqtxdg
+	options = !lto
+	source = https://github.com/ukui/qt5-ukui-platformtheme/archive/v1.0.8/qt5-ukui-platformtheme-1.0.8.tar.gz
+	sha512sums = e66bacfc3e00bd62e86f5c87ff9d204b851e7a56a17c64900c31ec612ce6b994f41b0107b826efa9d803799410b936ec7b2f0ea2ab77aa3d6b8878f30fb37591
+
+pkgname = qt5-ukui-platformtheme

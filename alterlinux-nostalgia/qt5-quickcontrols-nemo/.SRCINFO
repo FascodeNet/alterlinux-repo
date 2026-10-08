@@ -1,0 +1,20 @@
+pkgbase = qt5-quickcontrols-nemo
+	pkgdesc = QML components for Nemomobile, based on QtQuickControls
+	pkgver = 5.7.7
+	pkgrel = 1
+	url = https://github.com/nemomobile-ux/qtquickcontrols-nemo
+	arch = i486
+	license = LGPL
+	license = Apache
+	makedepends = cmake
+	makedepends = git
+	depends = nemo-qml-plugin-configuration
+	depends = nemo-theme-glacier
+	depends = qt5-graphicaleffects
+	depends = qt5-quickcontrols
+	depends = qt5-virtualkeyboard
+	options = !lto
+	source = git+https://github.com/nemomobile-ux/qtquickcontrols-nemo.git#tag=5.7.7
+	sha512sums = 51032dbb7d37284605df6e1e2c2a11e4132fdf53c69724c50bf8212e0b9e3b8ca7ff3a04b24f53869f659d3cbba6abdbee06efe2a1e3b2234222dd22e84a1b6b
+
+pkgname = qt5-quickcontrols-nemo
