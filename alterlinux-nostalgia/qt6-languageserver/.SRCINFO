@@ -1,0 +1,19 @@
+pkgbase = qt6-languageserver
+	pkgdesc = An implementation of the Language Server Protocol
+	pkgver = 6.11.2
+	pkgrel = 1
+	url = https://www.qt.io
+	arch = i486
+	groups = qt6
+	license = GPL-3.0-only
+	license = LGPL-3.0-only
+	license = LicenseRef-Qt-Commercial
+	license = Qt-GPL-exception-1.0
+	makedepends = cmake
+	makedepends = git
+	makedepends = ninja
+	depends = qt6-base
+	source = https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtlanguageserver-everywhere-src-6.11.2.tar.xz
+	sha256sums = 38bc4272ecf4ca0eb1927227053e52be6b2e05733f46d03422306aace511fc5e
+
+pkgname = qt6-languageserver

@@ -1,0 +1,30 @@
+pkgbase = polkit-qt
+	pkgdesc = A library that allows developers to access PolicyKit API with a nice Qt-style API
+	pkgver = 0.201.1
+	pkgrel = 1
+	url = https://www.kde.org/
+	arch = i486
+	license = BSD-3-Clause
+	license = GPL-2.0-or-later
+	license = LGPL-2.0-or-later
+	makedepends = ca-certificates-mozilla>=3.131
+	makedepends = cmake
+	makedepends = qt6-base
+	depends = libgcc
+	depends = libstdc++
+	depends = glib2
+	depends = glibc
+	depends = polkit
+	source = https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-0.201.1.tar.xz
+	source = https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-0.201.1.tar.xz.sig
+	validpgpkeys = D81C0CB38EB725EF6691C385BB463350D6EF31EF
+	sha256sums = 95d8e2cae530c546d9437459deb8a1bea38d572f0f9772cc2860dc143637f256
+	sha256sums = SKIP
+
+pkgname = polkit-qt6
+	depends = libgcc
+	depends = libstdc++
+	depends = glib2
+	depends = glibc
+	depends = polkit
+	depends = qt6-base

@@ -1,0 +1,179 @@
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgbase=qt6-base
+pkgname=(qt6-base
+         qt6-xcb-private-headers)
+_pkgver=6.11.2
+pkgver=${_pkgver/-/}
+pkgrel=3.1
+arch=(i486)
+url='https://www.qt.io'
+license=(GPL-3.0-only
+         LGPL-3.0-only
+         LicenseRef-Qt-Commercial
+         Qt-GPL-exception-1.0)
+pkgdesc='A cross-platform application and UI framework'
+depends=(brotli
+         dbus
+         double-conversion
+         fontconfig
+         freetype2
+         glib2
+         glibc
+         harfbuzz
+         icu
+         krb5
+         libb2
+         libcups
+         libdrm
+         libgcc
+         libgl
+         libice
+         libinput
+         libjpeg-turbo
+         libpng
+         libproxy
+         libsm
+         libstdc++
+         liburing
+         libx11
+         libxcb
+         libxkbcommon
+         libxkbcommon-x11
+         md4c
+         mesa
+         mtdev
+         openssl
+         pcre2
+         shared-mime-info
+         sqlite
+         systemd-libs
+         tslib
+         wayland
+         xcb-util-cursor
+         xcb-util-image
+         xcb-util-keysyms
+         xcb-util-renderutil
+         xcb-util-wm
+         xdg-utils
+         zlib
+         zstd)
+makedepends=(alsa-lib
+             cmake
+             cups
+             freetds
+             git
+             gst-plugins-base-libs
+             gtk3
+             jemalloc
+             libfbclient
+             libpulse
+             mariadb-libs
+             ninja
+             postgresql
+             unixodbc
+             vulkan-headers
+             xmlstarlet)
+checkdepends=(ttf-dejavu)
+optdepends=('freetds: MS SQL driver'
+            'gdk-pixbuf2: GTK platform plugin'
+            'gtk3: GTK platform plugin'
+            'libfbclient: Firebird/iBase driver'
+            'mariadb-libs: MariaDB driver'
+            'pango: GTK platform plugin'
+            'perl: for syncqt'
+            'postgresql-libs: PostgreSQL driver'
+            'unixodbc: ODBC driver')
+groups=(qt6)
+_pkgfn=${pkgbase/6-/}
+source=("https://download.qt.io/archive/qt/6.11/$_pkgver/submodules/$_pkgfn-everywhere-src-$_pkgver.tar.xz"
+        qt6-base-cflags.patch
+        qt6-base-nostrip.patch
+        qt6-base-icon-theme.patch
+        'https://download.qt.io/archive/qt/6.11/CVE-2026-82292-qtbase-6.11.diff'
+        CMakeLists.txt
+        smoke.cpp)
+sha256sums=('5b2e00eccaf5a4d8c14134ffa0ea8dfd0a35ae1ffc7f8d87fa4305a1ed23cf22'
+            '5411edbe215c24b30448fac69bd0ba7c882f545e8cf05027b2b6e2227abc5e78'
+            '4b93f6a79039e676a56f9d6990a324a64a36f143916065973ded89adc621e094'
+            'fa62ed7cccb40ffd93e65421f0c2763ca8db925e532cbf88042e494c4e9daba8'
+            'cb3f378890e84039c0bf444a13e0da8e06d5baab3c35302dad8344727d3bb523'
+            '34b6caa0259d3aab3c9c067b07570392ae11bd4f7ce9c00adfdbe7374da1ba82'
+            '86bfe15b953b4dc3b7a7539875e761b434ac2935a01f4c628d95385c4094d74d')
+
+prepare() {
+  mv "$_pkgfn-everywhere-src-$_pkgver" "$_pkgfn"
+  patch -d $_pkgfn -p1 < qt6-base-cflags.patch # Use system CFLAGS
+  patch -d $_pkgfn -p1 < qt6-base-nostrip.patch # Don't strip binaries with qmake
+
+  patch -d "$_pkgfn" -Np1 < qt6-base-icon-theme.patch
+  patch -d "$_pkgfn" -Np1 < CVE-2026-82292-qtbase-6.11.diff
+}
+
+build() {
+  export CFLAGS="$CFLAGS -march=i486 -mno-sse -mno-sse2 -mfpmath=387 -fcf-protection=none"
+  export CXXFLAGS="$CXXFLAGS -march=i486 -mno-sse -mno-sse2 -mfpmath=387 -fcf-protection=none"
+  # Set no_direct_extern_access based on architecture
+  if [[ $CARCH == "aarch64" || $CARCH == "riscv64" ]]; then
+    _no_direct_extern_access=OFF
+  else
+    _no_direct_extern_access=ON
+  fi
+
+  cmake -B build -S $_pkgfn -G Ninja \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DINSTALL_BINDIR=lib/qt6/bin \
+    -DINSTALL_PUBLICBINDIR=bin \
+    -DINSTALL_LIBEXECDIR=lib/qt6 \
+    -DINSTALL_DOCDIR=share/doc/qt6 \
+    -DINSTALL_ARCHDATADIR=lib/qt6 \
+    -DINSTALL_DATADIR=share/qt6 \
+    -DINSTALL_INCLUDEDIR=include/qt6 \
+    -DINSTALL_MKSPECSDIR=lib/qt6/mkspecs \
+    -DINSTALL_EXAMPLESDIR=share/doc/qt6/examples \
+    -DFEATURE_x86intrin=OFF \
+    -DFEATURE_intelcet=OFF \
+    -DFEATURE_journald=ON \
+    -DFEATURE_libproxy=ON \
+    -DFEATURE_openssl_linked=ON \
+    -DFEATURE_system_sqlite=ON \
+    -DFEATURE_system_xcb_xinput=ON \
+    -DFEATURE_no_direct_extern_access=$_no_direct_extern_access \
+    -DFEATURE_mimetype_database=OFF \
+    -DFEATURE_openssl_hash=ON \
+    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF \
+    -DCMAKE_MESSAGE_LOG_LEVEL=STATUS
+  cmake --build build
+}
+
+check() {
+  cmake -S "$srcdir" -B smoke-build -G Ninja \
+    -DQt6_DIR="$srcdir/build/lib/cmake/Qt6"
+  cmake --build smoke-build
+  QT_QPA_PLATFORM=offscreen QT_PLUGIN_PATH="$srcdir/build/plugins" \
+    ./smoke-build/qt6-i486-smoke
+}
+
+package_qt6-base() {
+  pkgdesc='A cross-platform application and UI framework'
+  depends+=(qt6-translations)
+  DESTDIR="$pkgdir" cmake --install build
+
+  install -Dm644 $_pkgfn/LICENSES/* -t "$pkgdir"/usr/share/licenses/$pkgbase
+}
+
+package_qt6-xcb-private-headers() {
+  pkgdesc='Private headers for Qt6 Xcb'
+
+  depends=("qt6-base=$pkgver")
+  optdepends=()
+  groups=()
+
+  cd $_pkgfn
+  install -d -m755 "$pkgdir"/usr/include/qt6xcb-private/gl_integrations
+  cp -r src/plugins/platforms/xcb/*.h "$pkgdir"/usr/include/qt6xcb-private/
+  cp -r src/plugins/platforms/xcb/gl_integrations/*.h "$pkgdir"/usr/include/qt6xcb-private/gl_integrations/
+}

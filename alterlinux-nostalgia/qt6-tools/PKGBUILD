@@ -1,0 +1,55 @@
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Andrea Scarpino <andrea@archlinux.org>
+
+pkgname=qt6-tools
+_pkgver=6.11.2
+pkgver=${_pkgver/-/}
+pkgrel=1
+arch=(i486)
+url='https://www.qt.io'
+license=(GPL-3.0-only
+         LGPL-3.0-only
+         LicenseRef-Qt-Commercial
+         Qt-GPL-exception-1.0)
+pkgdesc='A cross-platform application and UI framework (Development Tools, QtHelp)'
+depends=(glibc
+         libstdc++
+         litehtml
+         qt6-base
+         zstd)
+makedepends=(clang
+             cmake
+             git
+             llvm
+             ninja
+             qt6-declarative
+             vulkan-headers)
+optdepends=('clang: for qdoc and lupdate'
+            'qt6-declarative: for qdistancefieldgenerator, qdoc and lupdate')
+groups=(qt6)
+_pkgfn=${pkgname/6-/}
+source=(https://download.qt.io/archive/qt/6.11/$_pkgver/submodules/$_pkgfn-everywhere-src-$_pkgver.tar.xz
+        llvm22.patch)
+sha256sums=('9ea75af35c512f7e09e61c8c3af3997f13b4d43bb099cf43fcec470126b4041e'
+            '5f5dcc9234a19a2d545698406ee5dd5c3655d8cf3310e446a57d6d0738dc8e2e')
+
+prepare() {
+  mv "$_pkgfn-everywhere-src-$_pkgver" "$_pkgfn"
+  patch -d "$_pkgfn" -Np1 < llvm22.patch
+}
+
+build() {
+  cmake -B build -S $_pkgfn -G Ninja \
+    -DQT_INSTALL_XDG_DESKTOP_ENTRIES=ON \
+    -DQLITEHTML_USE_SYSTEM_LITEHTML=ON \
+    -DCMAKE_MESSAGE_LOG_LEVEL=STATUS
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+
+  install -d "$pkgdir"/usr/share/licenses
+  ln -s /usr/share/licenses/qt6-base "$pkgdir"/usr/share/licenses/$pkgname
+}

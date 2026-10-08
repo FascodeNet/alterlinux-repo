@@ -2,27 +2,24 @@
 # Maintainer: Antonio Rojas <arojas@archlinux.org>
 # Contributor: Andrea Scarpino <andrea@archlinux.org>
 
-pkgname=kcoreaddons6
-_pkgname=kcoreaddons
+pkgname=kwidgetsaddons6
+_pkgname=kwidgetsaddons
 pkgver=6.7.0
-pkgrel=2
-pkgdesc='Addons to QtCore'
-arch=(i486 pentium4)
+pkgrel=1
+pkgdesc='Addons to QtWidgets'
+arch=(i486)
 url='https://community.kde.org/Frameworks'
 license=(LGPL-2.0-only LGPL-3.0-only)
 depends=(gcc-libs
          glibc
-         qt6-base
-         systemd-libs)
+         qt6-base)
 makedepends=('ca-certificates-mozilla>=3.131'
              doxygen
              extra-cmake-modules
-             qt6-declarative
              qt6-tools)
-optdepends=('qt6-declarative: QML bindings')
 groups=(kf6)
 source=(https://download.kde.org/stable/frameworks/${pkgver%.*}/$_pkgname-$pkgver.tar.xz{,.sig})
-sha256sums=('48511e9dab1f2e80b3c4822bb87c2e981186de3b8977d92082d34d003b1283c5'
+sha256sums=('bd36342893863e6110c5f1245f8ae0b3a338275f4eaf124b15585d2fe492329a'
             'SKIP')
 validpgpkeys=(53E6B47B45CEA3E0D5B7457758D0EE648A48B3BB # David Faure <faure@kde.org>
               E0A3EB202F8E57528E13E72FD7574483BB57B18D # Jonathan Esk-Riddell <jr@jriddell.org>
