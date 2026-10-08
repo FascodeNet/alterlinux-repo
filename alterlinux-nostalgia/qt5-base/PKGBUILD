@@ -5,7 +5,7 @@ pkgbase=qt5-base
 pkgname=(qt5-base qt5-xcb-private-headers)
 _basever=5.15.19
 pkgver=5.15.19+kde+r96
-pkgrel=1
+pkgrel=1.1
 _commit=fbed962c3195ab3952fa54d40e012ad1a4fdc42b
 arch=(i486)
 options=(!lto)
@@ -32,11 +32,13 @@ _pkgfqn=${pkgbase/5-/}
 source=(kde-$_pkgfqn::git+https://invent.kde.org/qt/qt/$_pkgfqn#commit=$_commit
         qmake-cflags.patch
         qmake-config.patch
-        qtbase-no-ltcg-broken.patch)
+        qtbase-no-ltcg-broken.patch
+        qt5-base-qdom-null-nodes.patch)
 sha256sums=('fa3b11138b081a1b1f2412fcfa1177962460d05b71240ba01b7ea181eff6acc3'
             '5411edbe215c24b30448fac69bd0ba7c882f545e8cf05027b2b6e2227abc5e78'
             '4abc22150fa3e06b2fdcec32146abc9be4e316692aa4d5bd5aa53b4b726783fa'
-            '024549dbb8cc76921c16070b4cf1253e88fd33f78d6756e2ee398c405b8d1979')
+            '024549dbb8cc76921c16070b4cf1253e88fd33f78d6756e2ee398c405b8d1979'
+            '20537c104fdbee62dfb47bd6ae7eaa3dd8fcae430b760e72307245bcaf92d955')
 
 pkgver() {
   cd kde-$_pkgfqn
@@ -48,6 +50,7 @@ prepare() {
   patch -p1 < ../qmake-cflags.patch # Use system CFLAGS in qmake
   patch -p1 < ../qmake-config.patch # Don't strip binaries with qmake and use -ltcg, cf. QTBUG-73834
   patch -p1 < ../qtbase-no-ltcg-broken.patch
+  patch -p1 < ../qt5-base-qdom-null-nodes.patch
 }
 
 build() {
