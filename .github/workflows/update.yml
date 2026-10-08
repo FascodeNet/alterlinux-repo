@@ -26,10 +26,10 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: Hayao0819/Kamisato/actions/install@f6bea6e4a6113753ed8bc77e281a791b8bc46b17 # master
+      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
         with:
           ayaka: "true"
-          version: f6bea6e4a6113753ed8bc77e281a791b8bc46b17
+          version: 4520bef41a4a546a34c0e1ef934237985d92b836
       - uses: ./.github/actions/update
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

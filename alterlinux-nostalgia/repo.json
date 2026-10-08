@@ -25,7 +25,8 @@
     "installpkgs": {
         "files": [],
         "names": [
-            "curl"
+            "curl",
+            "ca-certificates-mozilla>=3.131"
         ]
     }
 }
