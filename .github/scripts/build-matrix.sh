@@ -70,7 +70,7 @@ fi
 
 # Ayato publishes an any package to all architectures in one transaction.
 jq --slurpfile packages "$workdir/packages.jsonl" '
-  reduce .build_matrix.include[] as $job ({seen: [], jobs: []};
+  (reduce .build_matrix.include[] as $job ({seen: [], jobs: []};
     ($job.pkgs | if . == "" then
       [$packages[] | select(.repo == $job.repo) |
         select((.arches | length) == 0 or (.arches | index("any")) != null or (.arches | index($job.arch)) != null) |
@@ -85,7 +85,7 @@ jq --slurpfile packages "$workdir/packages.jsonl" '
           else .keep += [$base] | if $is_any then .seen += [$key] else . end end
         ) |
       if (.keep | length) > 0 then .jobs += [$job + {pkgs:(.keep | join(" "))}] else . end
-  ) as $result |
+  )) as $result |
   .build_matrix.include = $result.jobs | .any_build = (($result.jobs | length) > 0)
 ' "$plan" >"$workdir/deduplicated.json"
 plan=$workdir/deduplicated.json
