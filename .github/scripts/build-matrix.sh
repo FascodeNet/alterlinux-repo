@@ -41,13 +41,14 @@ visit() {
   done
 }
 
+: >"$workdir/packages.jsonl"
+jq -r '.repos[].dir' .ayakarc.json >"$workdir/repos"
+while IFS= read -r dir; do
+  repo=$(jq -er '.name' "$dir/repo.json")
+  visit "$dir" "$repo"
+done <"$workdir/repos"
+
 if [[ -n ${IN_PACKAGES:-} ]]; then
-  : >"$workdir/packages.jsonl"
-  jq -r '.repos[].dir' .ayakarc.json >"$workdir/repos"
-  while IFS= read -r dir; do
-    repo=$(jq -er '.name' "$dir/repo.json")
-    visit "$dir" "$repo"
-  done <"$workdir/repos"
   jq --slurpfile packages "$workdir/packages.jsonl" --arg input "$IN_PACKAGES" '
     ($input | [scan("[^\\s]+") ] | unique) as $names |
     [.build_matrix.include[] as $job |
@@ -66,5 +67,27 @@ if [[ -n ${IN_PACKAGES:-} ]]; then
   ' "$plan" >"$workdir/plan.json"
   plan=$workdir/plan.json
 fi
+
+# Ayato publishes an any package to all architectures in one transaction.
+jq --slurpfile packages "$workdir/packages.jsonl" '
+  reduce .build_matrix.include[] as $job ({seen: [], jobs: []};
+    ($job.pkgs | if . == "" then
+      [$packages[] | select(.repo == $job.repo) |
+        select((.arches | length) == 0 or (.arches | index("any")) != null or (.arches | index($job.arch)) != null) |
+        .base] | unique
+      else [scan("[^\\s]+")] end) as $bases |
+      reduce $bases[] as $base
+        ({seen: .seen, jobs: .jobs, keep: []};
+          ([$packages[] | select(.repo == $job.repo and .base == $base) |
+            (.arches | index("any")) != null] | any) as $is_any |
+          ($job.repo + "/" + $base) as $key |
+          if $is_any and (.seen | index($key)) != null then .
+          else .keep += [$base] | if $is_any then .seen += [$key] else . end end
+        ) |
+      if (.keep | length) > 0 then .jobs += [$job + {pkgs:(.keep | join(" "))}] else . end
+  ) as $result |
+  .build_matrix.include = $result.jobs | .any_build = (($result.jobs | length) > 0)
+' "$plan" >"$workdir/deduplicated.json"
+plan=$workdir/deduplicated.json
 
 jq -r 'to_entries[] | select(.key == "build_matrix" or .key == "prune_matrix" or .key == "bumps" or .key == "any_build") | "\(.key)=\(.value | tojson)"' "$plan"
