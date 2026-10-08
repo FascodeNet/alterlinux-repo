@@ -5,7 +5,7 @@ pkgbase=qt5-base
 pkgname=(qt5-base qt5-xcb-private-headers)
 _basever=5.15.19
 pkgver=5.15.19+kde+r96
-pkgrel=1.1
+pkgrel=1.2
 _commit=fbed962c3195ab3952fa54d40e012ad1a4fdc42b
 arch=(i486)
 options=(!lto)
@@ -90,6 +90,7 @@ package_qt5-base() {
 
   printf '%s\n' 'set_property(TARGET Qt5::Core APPEND PROPERTY INTERFACE_LINK_LIBRARIES atomic)' \
     >> "$pkgdir/usr/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake"
+  sed -i 's/^Libs:.*/& -latomic/' "$pkgdir/usr/lib/pkgconfig/Qt5Core.pc"
 
   install -Dm644 LICENSE* -t "$pkgdir"/usr/share/licenses/$pkgbase
 

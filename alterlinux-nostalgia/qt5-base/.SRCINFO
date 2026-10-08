@@ -1,7 +1,7 @@
 pkgbase = qt5-base
 	pkgdesc = A cross-platform application and UI framework
 	pkgver = 5.15.19+kde+r96
-	pkgrel = 1.1
+	pkgrel = 1.2
 	url = https://www.qt.io
 	arch = i486
 	groups = qt5
