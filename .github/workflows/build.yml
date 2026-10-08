@@ -47,10 +47,10 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+      - uses: Hayao0819/Kamisato/actions/install@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           ayaka: "true"
-          version: ee9200fa70f2992db30bd9789402714ecc8ab78b
+          version: e2cccad510347b1667e9d9b7f5e53d4b1876c74d
       - id: gen
         env:
           IN_SERVER: ${{ vars.AYATO_URL }}
@@ -89,12 +89,12 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: Hayao0819/Kamisato/actions/install@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+      - uses: Hayao0819/Kamisato/actions/install@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           ayaka: "true"
-          version: ee9200fa70f2992db30bd9789402714ecc8ab78b
+          version: e2cccad510347b1667e9d9b7f5e53d4b1876c74d
       - id: bump
-        uses: Hayao0819/Kamisato/actions/bump@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+        uses: Hayao0819/Kamisato/actions/bump@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           bumps: ${{ needs.plan.outputs.bumps }}
 
@@ -120,12 +120,12 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+      - uses: Hayao0819/Kamisato/actions/install@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           ayaka: "true"
-          version: ee9200fa70f2992db30bd9789402714ecc8ab78b
+          version: e2cccad510347b1667e9d9b7f5e53d4b1876c74d
       - name: Build and publish packages
-        uses: Hayao0819/Kamisato/actions/build@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+        uses: Hayao0819/Kamisato/actions/build@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           server: ${{ vars.AYATO_URL }}
           repo: ${{ matrix.repo }}
@@ -152,12 +152,12 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+      - uses: Hayao0819/Kamisato/actions/install@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           ayaka: "true"
-          version: ee9200fa70f2992db30bd9789402714ecc8ab78b
+          version: e2cccad510347b1667e9d9b7f5e53d4b1876c74d
       - name: Prune removed packages
-        uses: Hayao0819/Kamisato/actions/prune@ee9200fa70f2992db30bd9789402714ecc8ab78b # master
+        uses: Hayao0819/Kamisato/actions/prune@e2cccad510347b1667e9d9b7f5e53d4b1876c74d # master
         with:
           server: ${{ vars.AYATO_URL }}
           repo: ${{ matrix.repo }}
