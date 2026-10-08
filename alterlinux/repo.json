@@ -28,5 +28,11 @@
             "i486": {}
         },
         "image": "ghcr.io/hayao0819/archlinux:$arch"
+    },
+    "installpkgs": {
+        "files": [],
+        "names": [
+            "curl"
+        ]
     }
 }

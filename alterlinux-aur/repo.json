@@ -6,6 +6,15 @@
             {
                 "name": "alterlinux-aur",
                 "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch"
+            },
+            {
+                "name": "alterlinux-nostalgia",
+                "server": "https://alter.repo.hayao0819.com/repo/$repo/$arch",
+                "arches": [
+                    "pentium4",
+                    "i686",
+                    "i486"
+                ]
             }
         ],
         "arches": {
@@ -18,6 +27,8 @@
     },
     "installpkgs": {
         "files": [],
-        "names": []
+        "names": [
+            "curl"
+        ]
     }
 }

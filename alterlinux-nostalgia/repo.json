@@ -24,6 +24,8 @@
     },
     "installpkgs": {
         "files": [],
-        "names": []
+        "names": [
+            "curl"
+        ]
     }
 }
