@@ -53,7 +53,12 @@ if [[ -n ${IN_ARCH:-} ]]; then
     if any(.build_matrix.include[], .prune_matrix.include[]; .arch == $arch) then
       .build_matrix.include |= map(select(.arch == $arch)) |
       .prune_matrix.include |= map(select(.arch == $arch)) |
-      .bumps |= with_entries(.value |= with_entries(select(.key == $arch))) |
+      .build_matrix.include as $jobs |
+      .bumps |= with_entries(. as $entry |
+        .value = ([$entry.value | scan("[^\\s]+") | . as $base |
+          select(any($jobs[]; .repo == $entry.key and
+            (.pkgs == "" or ([.pkgs | scan("[^\\s]+")] | index($base)) != null)))
+        ] | join(" ")) | select(.value != "")) |
       .any_build = ((.build_matrix.include | length) > 0)
     else error("Architecture missing from plan: " + $arch) end
   ' "$plan" >"$workdir/arch-plan.json"
