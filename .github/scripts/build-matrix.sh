@@ -48,6 +48,18 @@ while IFS= read -r dir; do
   visit "$dir" "$repo"
 done <"$workdir/repos"
 
+if [[ -n ${IN_ARCH:-} ]]; then
+  jq --arg arch "$IN_ARCH" '
+    if any(.build_matrix.include[], .prune_matrix.include[]; .arch == $arch) then
+      .build_matrix.include |= map(select(.arch == $arch)) |
+      .prune_matrix.include |= map(select(.arch == $arch)) |
+      .bumps |= with_entries(.value |= with_entries(select(.key == $arch))) |
+      .any_build = ((.build_matrix.include | length) > 0)
+    else error("Architecture missing from plan: " + $arch) end
+  ' "$plan" >"$workdir/arch-plan.json"
+  plan=$workdir/arch-plan.json
+fi
+
 if [[ -n ${IN_PACKAGES:-} ]]; then
   jq --slurpfile packages "$workdir/packages.jsonl" --arg input "$IN_PACKAGES" '
     ($input | [scan("[^\\s]+") ] | unique) as $names |
