@@ -3,18 +3,19 @@
 
 pkgname=curl
 pkgver=8.22.0
-pkgrel=1.2
+pkgrel=1.3
 pkgdesc='command line tool and library for transferring data with URLs'
 arch=(i486 i686 pentium4)
 url='https://curl.se/'
 license=(curl)
-depends=(ca-certificates brotli krb5 libidn2 libnghttp2 libnghttp3 libngtcp2
+depends=(ca-certificates c-ares brotli krb5 libidn2 libnghttp2 libnghttp3 libngtcp2
          libpsl libssh2 openssl zlib zstd)
 provides=(libcurl.so)
 conflicts=(wcurl)
 replaces=(wcurl)
-source=("https://curl.se/download/curl-$pkgver.tar.xz")
-sha256sums=('f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7')
+source=("https://curl.se/download/curl-$pkgver.tar.xz" check-fork-cleanup.sh)
+sha256sums=('f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7'
+            'ed8b65c6015787e3d0a4d7e6d0337b42943d35f895f7f09b3dfe3746c1172579')
 
 build() {
   cd "curl-$pkgver" || return
@@ -25,7 +26,8 @@ build() {
     --disable-ldaps \
     --disable-manual \
     --enable-ipv6 \
-    --enable-threaded-resolver \
+    --disable-threaded-resolver \
+    --enable-ares \
     --enable-websockets \
     --enable-versioned-symbols \
     --with-gssapi \
@@ -44,6 +46,7 @@ check() {
   cd "curl-$pkgver" || return
   readelf --dyn-syms --wide lib/.libs/libcurl.so | grep 'curl_global_trace@@CURL_OPENSSL_4' >/dev/null
   ./src/curl --version
+  bash "$srcdir/check-fork-cleanup.sh" "$PWD"
 }
 
 package() {

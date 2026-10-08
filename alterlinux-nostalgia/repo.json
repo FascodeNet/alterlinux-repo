@@ -26,6 +26,7 @@
         "files": [],
         "names": [
             "curl",
+            "c-ares",
             "ca-certificates-mozilla>=3.131"
         ]
     }
