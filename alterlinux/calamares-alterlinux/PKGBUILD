@@ -1,20 +1,15 @@
 # Maintainer: Yamada Hayao <development@fascode.net>
 
 pkgname=calamares-alterlinux
-_calamares_ver=3.4.2
+_calamares_ver=3.4.3
 pkgver=3.4.3
 pkgrel=1
 pkgdesc="Calamares installer bundled with AlterLinux branding, configuration and modules"
-# i686 is out: its qt6-base 6.7.2 still links icu 75 while archlinux32 ships
-# icu 78, so qtpaths cannot run and the ECM configure step dies. i486 has no
-# qt6 at all.
-arch=('x86_64' 'pentium4')
+arch=('x86_64' 'pentium4' 'i486')
 url="https://github.com/FascodeNet/calamares-extensions"
 license=('GPL-3.0-or-later')
 depends=(
     # Calamares runtime
-    'kcoreaddons'
-    'kcrash'
     'kpmcore'
     'libpwquality'
     'parted'
@@ -31,7 +26,9 @@ depends=(
 )
 # archlinux32's kcoreaddons is still KF5, so the KF6 build comes from our own
 # kcoreaddons6 there; on x86_64 the distro's kcoreaddons is already KF6.
-depends_pentium4=('kcoreaddons6')
+depends_x86_64=('kcoreaddons' 'kcrash')
+depends_pentium4=('kcoreaddons' 'kcrash' 'kcoreaddons6')
+depends_i486=('kcoreaddons6' 'kcrash6')
 makedepends=(
     'extra-cmake-modules'
     'libglvnd'
@@ -50,7 +47,7 @@ source=(
     "${_srcdir}.tar.gz::https://codeberg.org/Calamares/calamares/releases/download/v${_calamares_ver}/${_srcdir}.tar.gz"
     "git+https://github.com/FascodeNet/${_extname}.git"
 )
-sha256sums=('733bbbb00dc9f84874bd5c22960952f317ea2537565431179fa2152b2fbfdccc'
+sha256sums=('144cbbf6bdcebfb21685950db4f0777218519df095f62f4aa392f28348110d18'
             'SKIP')
 
 pkgver() {
