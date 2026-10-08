@@ -1,0 +1,19 @@
+pkgbase = ca-certificates-mozilla
+	pkgdesc = Mozilla's set of trusted CA certificates
+	pkgver = 3.131
+	pkgrel = 1
+	url = https://firefox-source-docs.mozilla.org/security/nss/index.html
+	arch = any
+	license = MPL-2.0
+	makedepends = python
+	depends = ca-certificates-utils>=20181109-3
+	source = https://hg.mozilla.org/projects/nss/raw-file/NSS_3_131_RTM/lib/ckfw/builtins/certdata.txt
+	source = https://hg.mozilla.org/projects/nss/raw-file/NSS_3_131_RTM/lib/ckfw/builtins/nssckbi.h
+	source = bundle.sh
+	source = certdata2pem.py
+	sha256sums = beb7e6dfe6499926e52c075c27bcfbe4c957f8609c575b3860273ae2806f63eb
+	sha256sums = e898aee5e04644a6022a4b228df1f4f37e91959f87547ad28645667381089bba
+	sha256sums = 3bfadf722da6773bdabdd25bdf78158648043d1b7e57615574f189a88ca865dd
+	sha256sums = d2a1579dae05fd16175fac27ef08b54731ecefdf414085c610179afcf62b096c
+
+pkgname = ca-certificates-mozilla

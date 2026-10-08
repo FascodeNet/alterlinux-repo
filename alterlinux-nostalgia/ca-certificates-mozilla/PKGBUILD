@@ -1,0 +1,38 @@
+# Maintainer: Yamada Hayao <development@fascode.net>
+
+pkgname=ca-certificates-mozilla
+pkgver=3.131
+pkgrel=1
+pkgdesc="Mozilla's set of trusted CA certificates"
+arch=(any)
+url='https://firefox-source-docs.mozilla.org/security/nss/index.html'
+license=(MPL-2.0)
+depends=('ca-certificates-utils>=20181109-3')
+makedepends=(python)
+source=(
+  "https://hg.mozilla.org/projects/nss/raw-file/NSS_${pkgver//./_}_RTM/lib/ckfw/builtins/certdata.txt"
+  "https://hg.mozilla.org/projects/nss/raw-file/NSS_${pkgver//./_}_RTM/lib/ckfw/builtins/nssckbi.h"
+  bundle.sh
+  certdata2pem.py
+)
+sha256sums=('beb7e6dfe6499926e52c075c27bcfbe4c957f8609c575b3860273ae2806f63eb'
+            'e898aee5e04644a6022a4b228df1f4f37e91959f87547ad28645667381089bba'
+            '3bfadf722da6773bdabdd25bdf78158648043d1b7e57615574f189a88ca865dd'
+            'd2a1579dae05fd16175fac27ef08b54731ecefdf414085c610179afcf62b096c')
+
+prepare() {
+  mkdir -p certs
+  ln -srft certs certdata.txt nssckbi.h
+}
+
+build() {
+  cd certs
+  python ../certdata2pem.py
+  cd ..
+  sh ./bundle.sh
+}
+
+package() {
+  install -Dm644 ca-bundle.trust.p11-kit \
+    "$pkgdir/usr/share/ca-certificates/trust-source/mozilla.trust.p11-kit"
+}
