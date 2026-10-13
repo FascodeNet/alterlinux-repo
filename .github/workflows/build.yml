@@ -51,7 +51,7 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+      - uses: Hayao0819/Kamisato/actions/install@97c783badc74599ab4e2bccb0366d0bd53ef3d6b # master
         with:
           ayaka: "true"
           version: 4520bef41a4a546a34c0e1ef934237985d92b836
@@ -94,7 +94,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+      - uses: Hayao0819/Kamisato/actions/install@97c783badc74599ab4e2bccb0366d0bd53ef3d6b # master
         with:
           ayaka: "true"
           version: 4520bef41a4a546a34c0e1ef934237985d92b836
@@ -125,7 +125,7 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+      - uses: Hayao0819/Kamisato/actions/install@97c783badc74599ab4e2bccb0366d0bd53ef3d6b # master
         with:
           ayaka: "true"
           version: 4520bef41a4a546a34c0e1ef934237985d92b836
@@ -157,7 +157,7 @@ jobs:
         with:
           go-version: "1.x"
           cache: false
-      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+      - uses: Hayao0819/Kamisato/actions/install@97c783badc74599ab4e2bccb0366d0bd53ef3d6b # master
         with:
           ayaka: "true"
           version: 4520bef41a4a546a34c0e1ef934237985d92b836

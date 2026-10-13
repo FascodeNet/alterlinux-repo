@@ -15,7 +15,7 @@ jobs:
         with:
           go-version-file: kamisato-src/go.mod
           cache-dependency-path: kamisato-src/go.sum
-      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+      - uses: Hayao0819/Kamisato/actions/install@97c783badc74599ab4e2bccb0366d0bd53ef3d6b # master
         with:
           ayaka: "true"
           source_dir: ${{ github.workspace }}/kamisato-src
