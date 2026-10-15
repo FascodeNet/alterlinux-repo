@@ -10,7 +10,7 @@
 # proper needs a harfbuzz update, tracked separately.
 
 pkgname=imagemagick
-pkgver=7.1.2.33
+pkgver=7.1.2.34
 _pkgver=${pkgver%.*}-${pkgver##*.}
 pkgrel=1
 pkgdesc='An image viewing/manipulation program'
@@ -81,7 +81,7 @@ checkdepends=(gsfonts
               ttf-dejavu)
 replaces=(imagemagick-doc)
 source=(git+https://github.com/ImageMagick/ImageMagick#tag=$_pkgver)
-b2sums=('cb78c6b2e055fadcfefd9cf3ff171b60d68bdc5645243c990a1cae4be912eec25249de32f47765e95606b010b17311ac3d23a5ab8e8711e73024a2b188b1cb83')
+b2sums=('aa8b3bd3338d697b09d5ae29f5c35eebcc04e08ca59d7f38c4f30399f44097d850ce679c97e49bbd82132b389571dfdc0ebeb01fd6a018a3d9e4ae757347adba')
 
 build() {
   cd ImageMagick
