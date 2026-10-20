@@ -1,6 +1,6 @@
 pkgbase = go
 	pkgdesc = Core compiler tools for the Go programming language
-	pkgver = 1.27.2
+	pkgver = 1.27.3
 	pkgrel = 1
 	epoch = 2
 	url = https://go.dev/
@@ -11,14 +11,14 @@ pkgbase = go
 	makedepends = git
 	provides = go-pie
 	replaces = go-pie
-	noextract = go-bootstrap-1.27.2-linux-386.tar.gz
+	noextract = go-bootstrap-1.27.3-linux-386.tar.gz
 	options = !strip
 	options = staticlibs
-	source = https://go.dev/dl/go1.27.2.src.tar.gz
+	source = https://go.dev/dl/go1.27.3.src.tar.gz
 	source = go-i486-softfloat-atomics.patch
-	source = go-bootstrap-1.27.2-linux-386.tar.gz::https://go.dev/dl/go1.27.2.linux-386.tar.gz
-	sha256sums = 03495da2ba64894d40f5c4992e49454fa78b50690604ff92b6afff5081b76e62
+	source = go-bootstrap-1.27.3-linux-386.tar.gz::https://go.dev/dl/go1.27.3.linux-386.tar.gz
+	sha256sums = 6e7749035cf360f06b2575d162ea79df9fda8ef671889e5c375f8e50777f26bb
 	sha256sums = 5a984599a7149d53a8b7334b5fd653a1ea0a3e041b5fbd97fb502ec0ea0f116b
-	sha256sums = 93dae4b7f463ed1e9c65e05561ce9fc5f7cd5c4ffca5e336248d48f3a2eab5fc
+	sha256sums = cfc243057c03dd131413b91269d16b5061f87f312059c1ed78681cbb95d6afbf
 
 pkgname = go
