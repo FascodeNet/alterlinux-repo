@@ -5,25 +5,26 @@
 pkgname=qt6-tools
 _pkgver=6.11.2
 pkgver=${_pkgver/-/}
-pkgrel=1
-arch=(i486)
+pkgrel=2
+arch=(i486 pentium4)
 url='https://www.qt.io'
-license=(GPL-3.0-only
+license=(Apache-2.0
+         BSD-3-Clause
+         GPL-3.0-only
          LGPL-3.0-only
          LicenseRef-Qt-Commercial
          Qt-GPL-exception-1.0)
 pkgdesc='A cross-platform application and UI framework (Development Tools, QtHelp)'
 depends=(glibc
          libstdc++
-         litehtml
-         qt6-base
+         "qt6-base=$pkgver"
          zstd)
 makedepends=(clang
              cmake
              git
              llvm
              ninja
-             qt6-declarative
+             "qt6-declarative=$pkgver"
              vulkan-headers)
 optdepends=('clang: for qdoc and lupdate'
             'qt6-declarative: for qdistancefieldgenerator, qdoc and lupdate')
@@ -42,7 +43,7 @@ prepare() {
 build() {
   cmake -B build -S $_pkgfn -G Ninja \
     -DQT_INSTALL_XDG_DESKTOP_ENTRIES=ON \
-    -DQLITEHTML_USE_SYSTEM_LITEHTML=ON \
+    -DQLITEHTML_USE_SYSTEM_LITEHTML=OFF \
     -DCMAKE_MESSAGE_LOG_LEVEL=STATUS
   cmake --build build
 }
@@ -50,6 +51,9 @@ build() {
 package() {
   DESTDIR="$pkgdir" cmake --install build
 
-  install -d "$pkgdir"/usr/share/licenses
-  ln -s /usr/share/licenses/qt6-base "$pkgdir"/usr/share/licenses/$pkgname
+  install -Dm644 "$_pkgfn"/LICENSES/* -t "$pkgdir/usr/share/licenses/$pkgname"
+  install -Dm644 "$_pkgfn/src/assistant/qlitehtml/src/3rdparty/litehtml/LICENSE" \
+    "$pkgdir/usr/share/licenses/$pkgname/litehtml-LICENSE"
+  install -Dm644 "$_pkgfn/src/assistant/qlitehtml/src/3rdparty/litehtml/src/gumbo/LICENSE" \
+    "$pkgdir/usr/share/licenses/$pkgname/gumbo-LICENSE"
 }

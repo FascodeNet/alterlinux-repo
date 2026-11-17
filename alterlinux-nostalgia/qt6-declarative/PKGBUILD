@@ -5,8 +5,8 @@
 pkgname=qt6-declarative
 _pkgver=6.11.2
 pkgver=${_pkgver/-/}
-pkgrel=1
-arch=(i486)
+pkgrel=2
+arch=(i486 pentium4)
 url='https://www.qt.io'
 license=(GPL-3.0-only
          LGPL-3.0-only
@@ -16,14 +16,14 @@ pkgdesc='Classes for QML and JavaScript languages'
 depends=(glibc
          libgcc
          libstdc++
-         qt6-base)
+         "qt6-base=$pkgver")
 makedepends=(cmake
              git
              ninja
              python
-             qt6-languageserver
-             qt6-shadertools
-             qt6-svg
+             "qt6-languageserver=$pkgver"
+             "qt6-shadertools=$pkgver"
+             "qt6-svg=$pkgver"
              vulkan-headers)
 optdepends=('qt6-svg: for QtQuickVectorImage and svgtoqml')
 groups=(qt6)

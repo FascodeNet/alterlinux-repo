@@ -1,10 +1,13 @@
 pkgbase = qt6-tools
 	pkgdesc = A cross-platform application and UI framework (Development Tools, QtHelp)
 	pkgver = 6.11.2
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.qt.io
 	arch = i486
+	arch = pentium4
 	groups = qt6
+	license = Apache-2.0
+	license = BSD-3-Clause
 	license = GPL-3.0-only
 	license = LGPL-3.0-only
 	license = LicenseRef-Qt-Commercial
@@ -14,12 +17,11 @@ pkgbase = qt6-tools
 	makedepends = git
 	makedepends = llvm
 	makedepends = ninja
-	makedepends = qt6-declarative
+	makedepends = qt6-declarative=6.11.2
 	makedepends = vulkan-headers
 	depends = glibc
 	depends = libstdc++
-	depends = litehtml
-	depends = qt6-base
+	depends = qt6-base=6.11.2
 	depends = zstd
 	optdepends = clang: for qdoc and lupdate
 	optdepends = qt6-declarative: for qdistancefieldgenerator, qdoc and lupdate

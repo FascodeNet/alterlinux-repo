@@ -37,9 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_matrix: ${{ steps.gen.outputs.build_matrix }}
+      qt_matrix: ${{ steps.gen.outputs.qt_matrix }}
       prune_matrix: ${{ steps.gen.outputs.prune_matrix }}
       bumps: ${{ steps.gen.outputs.bumps }}
       any_build: ${{ steps.gen.outputs.any_build }}
+      any_qt: ${{ steps.gen.outputs.any_qt }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -103,13 +105,40 @@ jobs:
         with:
           bumps: ${{ needs.plan.outputs.bumps }}
 
-  # One job per plan bucket. Within a bucket ayaka builds dependencies first and
-  # --publish uploads each package right after it is built (and stops on
-  # failure), so a later chroot in the same bucket pulls the fresh dependency
-  # from ayato via repo.json build.repos.
-  build:
+  qt:
     needs: [plan, bump]
-    if: always() && needs.plan.result == 'success' && needs.plan.outputs.any_build == 'true' && (needs.bump.result == 'success' || needs.bump.result == 'skipped')
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.any_qt == 'true' && (needs.bump.result == 'success' || needs.bump.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.qt_matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.bump.outputs.sha || github.sha }}
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version: "1.x"
+          cache: false
+      - uses: Hayao0819/Kamisato/actions/install@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+        with:
+          ayaka: "true"
+          version: 4520bef41a4a546a34c0e1ef934237985d92b836
+      - name: Build and publish Qt dependencies
+        uses: Hayao0819/Kamisato/actions/build@4520bef41a4a546a34c0e1ef934237985d92b836 # master
+        with:
+          server: ${{ vars.AYATO_URL }}
+          repo: ${{ matrix.repo }}
+          arch: ${{ matrix.arch }}
+          pkgs: ${{ matrix.pkgs }}
+          api_key: ${{ secrets.AYATO_TOKEN }}
+
+  build:
+    needs: [plan, bump, qt]
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.any_build == 'true' && (needs.bump.result == 'success' || needs.bump.result == 'skipped') && (needs.qt.result == 'success' || needs.qt.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 355
     strategy:
@@ -141,8 +170,8 @@ jobs:
   # Runs even when nothing was built: a removed PKGBUILD produces no new package
   # but its old one must still be pruned from ayato.
   prune:
-    needs: [plan, bump, build]
-    if: always() && needs.plan.result == 'success' && needs.build.result != 'failure' && needs.build.result != 'cancelled'
+    needs: [plan, bump, qt, build]
+    if: always() && needs.plan.result == 'success' && (needs.bump.result == 'success' || needs.bump.result == 'skipped') && (needs.qt.result == 'success' || needs.qt.result == 'skipped') && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

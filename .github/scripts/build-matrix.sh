@@ -107,4 +107,13 @@ jq --slurpfile packages "$workdir/packages.jsonl" '
 ' "$plan" >"$workdir/deduplicated.json"
 plan=$workdir/deduplicated.json
 
-jq -r 'to_entries[] | select(.key == "build_matrix" or .key == "prune_matrix" or .key == "bumps" or .key == "any_build") | "\(.key)=\(.value | tojson)"' "$plan"
+jq '
+  .build_matrix.include |= map(. + {qt:(.repo == "alterlinux-nostalgia" and (.pkgs | test("(^| )qt6-[^ ]+( |$)")))}) |
+  .qt_matrix.include = [.build_matrix.include[] | select(.qt) | del(.qt)] |
+  .build_matrix.include |= map(select(.qt | not) | del(.qt)) |
+  .any_qt = ((.qt_matrix.include | length) > 0) |
+  .any_build = ((.build_matrix.include | length) > 0)
+' "$plan" >"$workdir/staged.json"
+plan=$workdir/staged.json
+
+jq -r 'to_entries[] | select(.key == "build_matrix" or .key == "qt_matrix" or .key == "prune_matrix" or .key == "bumps" or .key == "any_build" or .key == "any_qt") | "\(.key)=\(.value | tojson)"' "$plan"

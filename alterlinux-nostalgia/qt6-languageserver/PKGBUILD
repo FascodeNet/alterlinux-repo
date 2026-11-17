@@ -4,15 +4,15 @@
 pkgname=qt6-languageserver
 _pkgver=6.11.2
 pkgver=${_pkgver/-/}
-pkgrel=1
-arch=(i486)
+pkgrel=2
+arch=(i486 pentium4)
 url='https://www.qt.io'
 license=(GPL-3.0-only
          LGPL-3.0-only
          LicenseRef-Qt-Commercial
          Qt-GPL-exception-1.0)
 pkgdesc='An implementation of the Language Server Protocol'
-depends=(qt6-base)
+depends=("qt6-base=$pkgver")
 makedepends=(cmake
              git
              ninja)

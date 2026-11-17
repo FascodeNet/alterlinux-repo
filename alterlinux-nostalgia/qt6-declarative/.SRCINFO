@@ -1,9 +1,10 @@
 pkgbase = qt6-declarative
 	pkgdesc = Classes for QML and JavaScript languages
 	pkgver = 6.11.2
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.qt.io
 	arch = i486
+	arch = pentium4
 	groups = qt6
 	license = GPL-3.0-only
 	license = LGPL-3.0-only
@@ -13,14 +14,14 @@ pkgbase = qt6-declarative
 	makedepends = git
 	makedepends = ninja
 	makedepends = python
-	makedepends = qt6-languageserver
-	makedepends = qt6-shadertools
-	makedepends = qt6-svg
+	makedepends = qt6-languageserver=6.11.2
+	makedepends = qt6-shadertools=6.11.2
+	makedepends = qt6-svg=6.11.2
 	makedepends = vulkan-headers
 	depends = glibc
 	depends = libgcc
 	depends = libstdc++
-	depends = qt6-base
+	depends = qt6-base=6.11.2
 	optdepends = qt6-svg: for QtQuickVectorImage and svgtoqml
 	source = https://download.qt.io/archive/qt/6.11/6.11.2/submodules/qtdeclarative-everywhere-src-6.11.2.tar.xz
 	sha256sums = 215b7b70517e380123eabc6b92243f3c47b6f016a91d126057dbe53551c6b430
