@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-status=0
-ayaka ci nvcheck --format json >nvcheck.jsonl || status=$?
-cat nvcheck.jsonl
+for attempt in 1 2 3; do
+  status=0
+  ayaka ci nvcheck --format json >nvcheck.jsonl || status=$?
+  cat nvcheck.jsonl
+  if ! jq -es 'any(.[]; .status? | strings | startswith("error: fetch latest"))' nvcheck.jsonl >/dev/null; then
+    break
+  fi
+  if (( attempt < 3 )); then
+    echo "::warning::Upstream fetch failed; retrying ($attempt/3)"
+    sleep 5
+  fi
+done
 
 jq -es '
   all(.[];
