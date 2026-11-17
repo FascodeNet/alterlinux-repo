@@ -1,23 +1,27 @@
 From 5bd090ef1b95a33875357402c579b06babdf6012 Mon Sep 17 00:00:00 2001
 From: David Gow <david@davidgow.net>
 Date: Wed, 15 Apr 2026 09:37:58 +0800
-Subject: [PATCH] Revert "x86/cpu: Remove M486/M486SX/ELAN support"
+Subject: [PATCH] x86/cpu: Restore i486 support
 
 Re-institute M486 support.
 
 This reverts commit 8b793a92d862c89055daa97ffa61a6929cf732f9.
----
- arch/x86/Kconfig                | 10 ++++++++
- arch/x86/Kconfig.cpu            | 44 +++++++++++++++++++++++++--------
- arch/x86/Makefile_32.cpu        |  2 ++
- arch/x86/include/asm/vermagic.h |  6 +++++
- 4 files changed, 52 insertions(+), 10 deletions(-)
+Adapted for Linux 7.3, including the TSC/CX8 fallbacks and INVD quirk.
 
+---
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f3f7cb01d69d02..589e056a90abcd 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -447,6 +447,11 @@ config SMP
+@@ -135,7 +135,7 @@
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select ARCH_SUPPORTS_RT
+ 	select ARCH_USE_BUILTIN_BSWAP
+-	select ARCH_USE_CMPXCHG_LOCKREF
++	select ARCH_USE_CMPXCHG_LOCKREF		if X86_CX8
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+@@ -450,6 +450,11 @@
  	  uniprocessor machines. On a uniprocessor machine, the kernel
  	  will run faster if you say N here.
  
@@ -29,7 +33,7 @@ index f3f7cb01d69d02..589e056a90abcd 100644
  	  People using multiprocessor machines who say Y here should also say
  	  Y to "Enhanced Real Time Clock Support", below. The "Advanced Power
  	  Management" code will be disabled if you say Y here.
-@@ -2768,6 +2773,11 @@ menuconfig APM
+@@ -2728,6 +2733,11 @@
  	  manpage ("man 8 hdparm") for that), and it doesn't turn off
  	  VESA-compliant "green" monitors.
  
@@ -42,17 +46,17 @@ index f3f7cb01d69d02..589e056a90abcd 100644
  	  much point in using this driver and you should say N. If you get
  	  random kernel OOPSes or reboots that don't seem to be related to
 diff --git a/arch/x86/Kconfig.cpu b/arch/x86/Kconfig.cpu
-index d7ba9219cb47dc..f928cf6e32524e 100644
 --- a/arch/x86/Kconfig.cpu
 +++ b/arch/x86/Kconfig.cpu
-@@ -8,18 +8,19 @@ choice
+@@ -8,18 +8,19 @@
  	  This is the processor type of your CPU. This information is
  	  used for optimizing purposes. In order to compile a kernel
  	  that can run on all supported x86 CPU types (albeit not
 -	  optimally fast), you can specify "586" here.
-+	  optimally fast), you can specify "486" here.
- 
+-
 -	  Note that the 386 and 486 is no longer supported, this includes
++	  optimally fast), you can specify "486" here.
++
 +	  Note that the 386 is no longer supported, this includes
  	  AMD/Cyrix/Intel 386DX/DXL/SL/SLC/SX, Cyrix/TI 486DLC/DLC2,
 -	  UMC 486SX-S and the NexGen Nx586, AMD ELAN and all 486 based
@@ -69,7 +73,7 @@ index d7ba9219cb47dc..f928cf6e32524e 100644
  	  - "586" for generic Pentium CPUs lacking the TSC
  	    (time stamp counter) register.
  	  - "Pentium-Classic" for the Intel Pentium.
-@@ -45,6 +46,20 @@ choice
+@@ -43,6 +44,20 @@
  	  See each option's help text for additional details. If you don't know
  	  what to do, choose "Pentium-Pro".
  
@@ -87,12 +91,12 @@ index d7ba9219cb47dc..f928cf6e32524e 100644
 +	  Select this for an 486-class CPU such as AMD/Cyrix/IBM/Intel
 +	  486DX/DX2/DX4 and UMC U5D.
 +
- config M586
- 	bool "586/K5/5x86/6x86/6x86MX"
+ config M586TSC
+ 	bool "Pentium-Classic"
  	depends on X86_32
-@@ -173,6 +188,14 @@ config MWINCHIP3D
- 	  stores for this CPU, which can increase performance of some
- 	  operations.
+@@ -145,6 +160,14 @@
+ 	help
+ 	  Select this for a Transmeta Efficeon processor.
  
 +config MELAN
 +	bool "AMD Elan"
@@ -105,31 +109,47 @@ index d7ba9219cb47dc..f928cf6e32524e 100644
  config MGEODEGX1
  	bool "GeodeGX1"
  	depends on X86_32
-@@ -269,12 +292,12 @@ config X86_L1_CACHE_SHIFT
+@@ -252,16 +275,20 @@
  	int
  	default "7" if MPENTIUM4
  	default "6" if MK7 || MPENTIUMM || MATOM || MVIAC7 || X86_GENERIC || X86_64
 -	default "4" if MGEODEGX1
 +	default "4" if MELAN || M486SX || M486 || MGEODEGX1
- 	default "5" if MWINCHIP3D || MWINCHIPC6 || MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODE_LX
+ 	default "5" if MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || MVIAC3_2 || MGEODE_LX
  
  config X86_F00F_BUG
  	def_bool y
 -	depends on M586MMX || M586TSC || M586
 +	depends on M586MMX || M586TSC || M586 || M486SX || M486
- 
- config X86_INVD_BUG
- 	def_bool y
-@@ -282,7 +305,7 @@ config X86_INVD_BUG
++
++config X86_INVD_BUG
++	def_bool y
++	depends on M486SX || M486
  
  config X86_ALIGNMENT_16
  	def_bool y
--	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MK6 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODEGX1
-+	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MELAN || MK6 || M586MMX || M586TSC || M586 || M486SX || M486 || MVIAC3_2 || MGEODEGX1
+-	depends on MCYRIXIII || MK6 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODEGX1
++	depends on MCYRIXIII || MELAN || MK6 || M586MMX || M586TSC || M586 || M486SX || M486 || MVIAC3_2 || MGEODEGX1
  
  config X86_INTEL_USERCOPY
  	def_bool y
-@@ -314,11 +337,12 @@ config X86_MINIMUM_CPU_FAMILY
+@@ -273,6 +300,7 @@
+ 
+ config X86_TSC
+ 	def_bool y
++	depends on !M486SX && !M486 && !MELAN
+ 
+ config X86_HAVE_PAE
+ 	def_bool y
+@@ -280,6 +308,7 @@
+ 
+ config X86_CX8
+ 	def_bool y
++	depends on !M486SX && !M486 && !MELAN
+ 
+ # this should be set for all -march=.. options where the compiler
+ # generates cmov.
+@@ -291,11 +320,12 @@
  	int
  	default "64" if X86_64
  	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MK7)
@@ -139,12 +159,12 @@ index d7ba9219cb47dc..f928cf6e32524e 100644
  
  config X86_DEBUGCTLMSR
  	def_bool y
--	depends on !(MK6 || MWINCHIPC6 || MWINCHIP3D || MCYRIXIII || M586MMX || M586TSC || M586) && !UML
-+	depends on !(MK6 || MWINCHIPC6 || MWINCHIP3D || MCYRIXIII || M586MMX || M586TSC || M586 || M486SX || M486) && !UML
+-	depends on !(MK6 || MCYRIXIII || M586MMX || M586TSC || M586) && !UML
++	depends on !(MK6 || MCYRIXIII || M586MMX || M586TSC || M586 || M486SX || M486) && !UML
  
  config IA32_FEAT_CTL
  	def_bool y
-@@ -354,7 +378,7 @@ config CPU_SUP_INTEL
+@@ -327,7 +357,7 @@
  config CPU_SUP_CYRIX_32
  	default y
  	bool "Support Cyrix processors" if PROCESSOR_SELECT
@@ -153,21 +173,103 @@ index d7ba9219cb47dc..f928cf6e32524e 100644
  	help
  	  This enables detection, tunings and quirks for Cyrix processors
  
+diff --git a/arch/x86/Kconfig.cpufeatures b/arch/x86/Kconfig.cpufeatures
+--- a/arch/x86/Kconfig.cpufeatures
++++ b/arch/x86/Kconfig.cpufeatures
+@@ -42,6 +42,7 @@
+ 
+ config X86_REQUIRED_FEATURE_CX8
+ 	def_bool y
++	depends on X86_CX8
+ 
+ # this should be set for all -march=.. options where the compiler
+ # generates cmov.
 diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
-index 7c9898c1537613..a3dda95e47f412 100644
 --- a/arch/x86/Makefile_32.cpu
 +++ b/arch/x86/Makefile_32.cpu
-@@ -10,6 +10,8 @@ else
+@@ -10,6 +10,8 @@
  align		:= -falign-functions=0 -falign-jumps=0 -falign-loops=0
  endif
  
 +cflags-$(CONFIG_M486SX)		+= -march=i486
 +cflags-$(CONFIG_M486)		+= -march=i486
- cflags-$(CONFIG_M586)		+= -march=i586
  cflags-$(CONFIG_M586TSC)	+= -march=i586
  cflags-$(CONFIG_M586MMX)	+= -march=pentium-mmx
+ cflags-$(CONFIG_M686)		+= -march=i686
+diff --git a/arch/x86/include/asm/timex.h b/arch/x86/include/asm/timex.h
+--- a/arch/x86/include/asm/timex.h
++++ b/arch/x86/include/asm/timex.h
+@@ -7,7 +7,8 @@
+ 
+ static inline unsigned long random_get_entropy(void)
+ {
+-	if (!cpu_feature_enabled(X86_FEATURE_TSC))
++	if (!IS_ENABLED(CONFIG_X86_TSC) &&
++	    !cpu_feature_enabled(X86_FEATURE_TSC))
+ 		return random_get_entropy_fallback();
+ 	return rdtsc();
+ }
+diff --git a/arch/x86/include/asm/trace_clock.h b/arch/x86/include/asm/trace_clock.h
+--- a/arch/x86/include/asm/trace_clock.h
++++ b/arch/x86/include/asm/trace_clock.h
+@@ -5,9 +5,17 @@
+ #include <linux/compiler.h>
+ #include <linux/types.h>
+ 
++#ifdef CONFIG_X86_TSC
++
+ extern u64 notrace trace_clock_x86_tsc(void);
+ 
+ # define ARCH_TRACE_CLOCKS \
+ 	{ trace_clock_x86_tsc,	"x86-tsc",	.in_ns = 0 },
+ 
++#else
++
++#define ARCH_TRACE_CLOCKS
++
++#endif
++
+ #endif  /* _ASM_X86_TRACE_CLOCK_H */
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -76,7 +76,8 @@
+ 
+ static inline cycles_t get_cycles(void)
+ {
+-	if (!cpu_feature_enabled(X86_FEATURE_TSC))
++	if (!IS_ENABLED(CONFIG_X86_TSC) &&
++	    !cpu_feature_enabled(X86_FEATURE_TSC))
+ 		return 0;
+ 	return rdtsc();
+ }
+@@ -93,15 +94,25 @@
+ extern unsigned long long native_sched_clock_from_tsc(u64 tsc);
+ 
+ extern int tsc_clocksource_reliable;
++#ifdef CONFIG_X86_TSC
+ extern bool tsc_async_resets;
++#else
++# define tsc_async_resets	false
++#endif
+ 
+ /*
+  * Boot-time check whether the TSCs are synchronized across
+  * all CPUs/cores:
+  */
++#ifdef CONFIG_X86_TSC
+ extern bool tsc_store_and_check_tsc_adjust(bool bootcpu);
+ extern void tsc_verify_tsc_adjust(bool resume);
+ extern void check_tsc_sync_target(void);
++#else
++static inline bool tsc_store_and_check_tsc_adjust(bool bootcpu) { return false; }
++static inline void tsc_verify_tsc_adjust(bool resume) { }
++static inline void check_tsc_sync_target(void) { }
++#endif
+ 
+ extern int notsc_setup(char *);
+ extern void tsc_save_sched_clock_state(void);
 diff --git a/arch/x86/include/asm/vermagic.h b/arch/x86/include/asm/vermagic.h
-index eda233a90ea86a..5d471253c75549 100644
 --- a/arch/x86/include/asm/vermagic.h
 +++ b/arch/x86/include/asm/vermagic.h
 @@ -5,6 +5,10 @@
@@ -178,10 +280,10 @@ index eda233a90ea86a..5d471253c75549 100644
 +#define MODULE_PROC_FAMILY "486SX "
 +#elif defined CONFIG_M486
 +#define MODULE_PROC_FAMILY "486 "
- #elif defined CONFIG_M586
- #define MODULE_PROC_FAMILY "586 "
  #elif defined CONFIG_M586TSC
-@@ -27,6 +31,8 @@
+ #define MODULE_PROC_FAMILY "586TSC "
+ #elif defined CONFIG_M586MMX
+@@ -25,6 +29,8 @@
  #define MODULE_PROC_FAMILY "K6 "
  #elif defined CONFIG_MK7
  #define MODULE_PROC_FAMILY "K7 "
@@ -190,3 +292,83 @@ index eda233a90ea86a..5d471253c75549 100644
  #elif defined CONFIG_MCRUSOE
  #define MODULE_PROC_FAMILY "CRUSOE "
  #elif defined CONFIG_MEFFICEON
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -108,7 +108,7 @@
+ obj-$(CONFIG_APM)		+= apm.o
+ obj-$(CONFIG_SMP)		+= smp.o
+ obj-$(CONFIG_SMP)		+= smpboot.o
+-obj-y				+= tsc_sync.o
++obj-$(CONFIG_X86_TSC)		+= tsc_sync.o
+ obj-$(CONFIG_SMP)		+= setup_percpu.o
+ obj-$(CONFIG_X86_MPPARSE)	+= mpparse.o
+ obj-y				+= apic/
+@@ -117,7 +117,7 @@
+ obj-$(CONFIG_FUNCTION_TRACER)	+= ftrace_$(BITS).o
+ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += ftrace.o
+ obj-$(CONFIG_FTRACE_SYSCALLS)	+= ftrace.o
+-obj-y				+= trace_clock.o
++obj-$(CONFIG_X86_TSC)		+= trace_clock.o
+ obj-$(CONFIG_TRACING)		+= trace.o
+ obj-$(CONFIG_RETHOOK)		+= rethook.o
+ obj-$(CONFIG_VMCORE_INFO)	+= vmcore_info_$(BITS).o
+diff --git a/arch/x86/kernel/i8253.c b/arch/x86/kernel/i8253.c
+--- a/arch/x86/kernel/i8253.c
++++ b/arch/x86/kernel/i8253.c
+@@ -31,7 +31,7 @@
+  */
+ static bool __init use_pit(void)
+ {
+-	if (!boot_cpu_has(X86_FEATURE_TSC))
++	if (!IS_ENABLED(CONFIG_X86_TSC) || !boot_cpu_has(X86_FEATURE_TSC))
+ 		return true;
+ 
+ 	/* This also returns true when APIC is disabled */
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1475,6 +1475,13 @@
+ 
+ DEFINE_IDTENTRY(exc_simd_coprocessor_error)
+ {
++	if (IS_ENABLED(CONFIG_X86_INVD_BUG)) {
++		/* AMD 486 bug: INVD in CPL 0 raises #XF instead of #GP */
++		if (!cpu_feature_enabled(X86_FEATURE_XMM)) {
++			__exc_general_protection(regs, 0);
++			return;
++		}
++	}
+ 	math_error(regs, X86_TRAP_XF);
+ }
+ 
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -298,17 +298,26 @@
+ 	preempt_enable_notrace();
+ 	return now;
+ }
++
+ int check_tsc_unstable(void)
+ {
+ 	return tsc_unstable;
+ }
+ EXPORT_SYMBOL_GPL(check_tsc_unstable);
+ 
++#ifdef CONFIG_X86_TSC
+ int __init notsc_setup(char *str)
+ {
+ 	mark_tsc_unstable("boot parameter notsc");
+ 	return 1;
+ }
++#else
++int __init notsc_setup(char *str)
++{
++	setup_clear_cpu_cap(X86_FEATURE_TSC);
++	return 1;
++}
++#endif
+ __setup("notsc", notsc_setup);
+ 
+ enum {

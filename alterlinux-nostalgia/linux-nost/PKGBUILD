@@ -2,13 +2,9 @@
 # Based on the Arch Linux linux package by Jan Alexander Steffens (heftig)
 # and the archlinux32 linux overlay.
 
-# Linux 7.1 removed i486 (M486/M486SX/ELAN); patches 0001-0003 are David Gow's
-# unofficial revival (https://github.com/sulix/linux, branch i486), applied only
-# on i486 via source_i486. Config is tuned for low-memory old hardware.
-
 pkgbase=linux-nost
 pkgver=7.3.4.arch1
-pkgrel=1
+pkgrel=2
 pkgdesc='Linux for nostalgic 32-bit machines'
 url='https://github.com/archlinux/linux'
 arch=(
@@ -53,7 +49,7 @@ b2sums=('9b75f615d0a03d6627d7e3db4397882d602161db13cd5efd6226e0e5c5f970d1baea676
         'b68e45a3a00532ae7719d5febc5cf487712f7290b2bba60e5bc5fdd693b7477693823f79ea8e9a27dbc66da7bf6c0cbd6cbcfb52a1b420a8d800ec64982a9d09'
         '165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40')
 b2sums_i486=('a60634d24ff4dc47ab8b2bab5d45a1a620443bef6999eccff15ae67dbf8353bc6c29c5078c7568cfa55aaf70bc7beb1912cb025aa2f189c1e182da37bd66a034'
-             'ed74c5825e4a9c476d166a9e0a989b376292e60d437b27438a423585e0f77a56f230ba04d73382a5e01156da3550d20580ab778edf9d899e109f812a16ab5056'
+             'fd19e3eb3e2210022aa6f83c021ec8482a734bceb164bb6949ebfdd57a0b8a34527684d415e231cd6e5dfb0d5cfcb352b296cabeb51721e5ea4526f17a115ef2'
              '0a254a000db6aad124c70c50cd2a7fc5fe2027a1e3c5b6b0ae6751e94faa875da65ee13ca18a3fa6b2eaabf52aa410c196fd1d82abb6bd1d8481f59f70c355b3'
              'a314b73c481dd5d82ab2fa9cde5551cb1dd69c56440ab0b4d9ec9d58255ba6874bb81beff28124e2a174765436b202999913335e77994372928049a9db85b19c')
 b2sums_i686=('deefe59f1a86abd7d1a3886450990eda89f4154a32e282601b1fb300705d0792cb1cc757b49d0e7625fcc4967aab9ed3e25e61b2b5509ff292aa3e9e4e1766f7')

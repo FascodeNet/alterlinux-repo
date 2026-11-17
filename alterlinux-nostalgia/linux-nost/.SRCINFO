@@ -1,7 +1,7 @@
 pkgbase = linux-nost
 	pkgdesc = Linux for nostalgic 32-bit machines
 	pkgver = 7.3.4.arch1
-	pkgrel = 1
+	pkgrel = 2
 	url = https://github.com/archlinux/linux
 	arch = i486
 	arch = i686
@@ -29,7 +29,7 @@ pkgbase = linux-nost
 	source_i486 = 0002-i486-e820-fallback.patch
 	source_i486 = 0003-i486-checksum-unaligned.patch
 	b2sums_i486 = a60634d24ff4dc47ab8b2bab5d45a1a620443bef6999eccff15ae67dbf8353bc6c29c5078c7568cfa55aaf70bc7beb1912cb025aa2f189c1e182da37bd66a034
-	b2sums_i486 = ed74c5825e4a9c476d166a9e0a989b376292e60d437b27438a423585e0f77a56f230ba04d73382a5e01156da3550d20580ab778edf9d899e109f812a16ab5056
+	b2sums_i486 = fd19e3eb3e2210022aa6f83c021ec8482a734bceb164bb6949ebfdd57a0b8a34527684d415e231cd6e5dfb0d5cfcb352b296cabeb51721e5ea4526f17a115ef2
 	b2sums_i486 = 0a254a000db6aad124c70c50cd2a7fc5fe2027a1e3c5b6b0ae6751e94faa875da65ee13ca18a3fa6b2eaabf52aa410c196fd1d82abb6bd1d8481f59f70c355b3
 	b2sums_i486 = a314b73c481dd5d82ab2fa9cde5551cb1dd69c56440ab0b4d9ec9d58255ba6874bb81beff28124e2a174765436b202999913335e77994372928049a9db85b19c
 	source_i686 = config.i686
