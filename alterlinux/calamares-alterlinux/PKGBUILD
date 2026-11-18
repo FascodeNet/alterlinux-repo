@@ -84,25 +84,21 @@ build() {
 package() {
     local _ext="${srcdir}/${_extname}"
 
-    # 1) Calamares body + upstream default module configuration
-    #    (INSTALL_CONFIG=ON installs defaults under /usr/share/calamares/*)
     DESTDIR="${pkgdir}" cmake --install build
 
-    # 2) AlterLinux branding (data only: branding.desc, show.qml, fonts, lang, ...)
     install -d "${pkgdir}/usr/share/calamares/branding"
     cp -r "${_ext}/branding/alter" "${pkgdir}/usr/share/calamares/branding/alter"
 
-    # 3) postcfg module (Python job, no compilation)
     install -d "${pkgdir}/usr/lib/calamares/modules"
     cp -r "${_ext}/modules/postcfg" "${pkgdir}/usr/lib/calamares/modules/postcfg"
+    cp -r "${_ext}/modules/cleanup" "${pkgdir}/usr/lib/calamares/modules/cleanup"
 
-    # 4) AlterLinux configuration overrides in /etc (takes precedence over /usr/share)
+    # /etc/calamares overrides the defaults in /usr/share/calamares.
     install -Dm644 "${_ext}/settings.conf" "${pkgdir}/etc/calamares/settings.conf"
     for _conf in "${_ext}/module-conf/"*.conf; do
         install -Dm644 "${_conf}" "${pkgdir}/etc/calamares/modules/$(basename "${_conf}")"
     done
 
-    # 5) Supporting data
     install -Dm755 "${_ext}/data/run-scripts" "${pkgdir}/etc/calamares/run-scripts"
     install -Dm755 "${_ext}/data/restore-target-kernel" \
         "${pkgdir}/etc/calamares/restore-target-kernel"
