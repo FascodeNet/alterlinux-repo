@@ -1,7 +1,7 @@
 pkgbase = calamares-alterlinux
 	pkgdesc = Calamares installer bundled with AlterLinux branding, configuration and modules
-	pkgver = 3.4.3
-	pkgrel = 1
+	pkgver = 3.4.3.r310.61bd09c
+	pkgrel = 2
 	url = https://github.com/FascodeNet/calamares-extensions
 	arch = x86_64
 	arch = pentium4
@@ -14,7 +14,7 @@ pkgbase = calamares-alterlinux
 	makedepends = qt6-translations
 	makedepends = python
 	makedepends = git
-	depends = kpmcore
+	depends = kpmcore>=24.08.3
 	depends = libpwquality
 	depends = parted
 	depends = qt6-declarative
@@ -35,9 +35,8 @@ pkgbase = calamares-alterlinux
 	sha256sums = SKIP
 	depends_x86_64 = kcoreaddons
 	depends_x86_64 = kcrash
-	depends_pentium4 = kcoreaddons
-	depends_pentium4 = kcrash
 	depends_pentium4 = kcoreaddons6
+	depends_pentium4 = kcrash6
 	depends_i486 = kcoreaddons6
 	depends_i486 = kcrash6
 

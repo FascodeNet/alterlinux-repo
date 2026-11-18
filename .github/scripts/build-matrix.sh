@@ -108,7 +108,7 @@ jq --slurpfile packages "$workdir/packages.jsonl" '
 plan=$workdir/deduplicated.json
 
 jq '
-  .build_matrix.include |= map(. + {qt:(.repo == "alterlinux-nostalgia" and (.pkgs | test("(^| )qt6-[^ ]+( |$)")))}) |
+  .build_matrix.include |= map(. + {qt:(.repo == "alterlinux-nostalgia" and (.pkgs | test("(^| )(qt6-[^ ]+|kcoreaddons6|kcrash6|ki18n6|kwidgetsaddons6|kpmcore|polkit-qt)( |$)")))}) |
   .qt_matrix.include = [.build_matrix.include[] | select(.qt) | del(.qt)] |
   .build_matrix.include |= map(select(.qt | not) | del(.qt)) |
   .any_qt = ((.qt_matrix.include | length) > 0) |

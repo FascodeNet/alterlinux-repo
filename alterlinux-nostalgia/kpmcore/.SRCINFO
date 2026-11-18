@@ -4,6 +4,7 @@ pkgbase = kpmcore
 	pkgrel = 1
 	url = https://apps.kde.org/partitionmanager/
 	arch = i486
+	arch = pentium4
 	license = GPL-2.0-or-later
 	makedepends = ca-certificates-mozilla>=3.131
 	makedepends = extra-cmake-modules

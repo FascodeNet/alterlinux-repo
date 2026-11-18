@@ -1,33 +1,30 @@
 # Maintainer: Yamada Hayao <development@fascode.net>
 
 pkgname=calamares-alterlinux
-_calamares_ver=3.4.3
-pkgver=3.4.3
-pkgrel=1
+pkgver=3.4.3.r310.61bd09c
+_calamares_ver=${pkgver%%.r*}
+pkgrel=2
 pkgdesc="Calamares installer bundled with AlterLinux branding, configuration and modules"
 arch=('x86_64' 'pentium4' 'i486')
 url="https://github.com/FascodeNet/calamares-extensions"
 license=('GPL-3.0-or-later')
 depends=(
-    # Calamares runtime
-    'kpmcore'
+    'kpmcore>=24.08.3'
     'libpwquality'
     'parted'
     'qt6-declarative'
     'qt6-svg'
     'yaml-cpp'
     'python'
-    # Runtime tools used by the modules AlterLinux enables
     'rsync'
     'squashfs-tools'
     'ckbcomp'
     'polkit'
     'polkit-qt6'
 )
-# archlinux32's kcoreaddons is still KF5, so the KF6 build comes from our own
-# kcoreaddons6 there; on x86_64 the distro's kcoreaddons is already KF6.
+# Arch Linux 32's unversioned frameworks are still KF5.
 depends_x86_64=('kcoreaddons' 'kcrash')
-depends_pentium4=('kcoreaddons' 'kcrash' 'kcoreaddons6')
+depends_pentium4=('kcoreaddons6' 'kcrash6')
 depends_i486=('kcoreaddons6' 'kcrash6')
 makedepends=(
     'extra-cmake-modules'
