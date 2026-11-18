@@ -1,7 +1,7 @@
 pkgbase = kcoreaddons6
 	pkgdesc = Addons to QtCore
 	pkgver = 6.7.0
-	pkgrel = 2
+	pkgrel = 2.1
 	url = https://community.kde.org/Frameworks
 	arch = i486
 	arch = pentium4
