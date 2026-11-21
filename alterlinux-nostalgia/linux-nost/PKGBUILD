@@ -3,8 +3,8 @@
 # and the archlinux32 linux overlay.
 
 pkgbase=linux-nost
-pkgver=7.3.4.arch1
-pkgrel=2
+pkgver=7.3.5.arch1
+pkgrel=1
 pkgdesc='Linux for nostalgic 32-bit machines'
 url='https://github.com/archlinux/linux'
 arch=(
@@ -45,8 +45,8 @@ source_i686=(config.i686)
 source_pentium4=(config.pentium4)
 # b2sums pin the exact upstream tarball/patch, so verify by hash only (the build
 # containers lack the kernel PGP keys, and this keeps parity with the other pkgs).
-b2sums=('9b75f615d0a03d6627d7e3db4397882d602161db13cd5efd6226e0e5c5f970d1baea676d9d01edd0f09ed0b7207b6421e6340f1b8e9bd4e8152491ddddcc9021'
-        'b68e45a3a00532ae7719d5febc5cf487712f7290b2bba60e5bc5fdd693b7477693823f79ea8e9a27dbc66da7bf6c0cbd6cbcfb52a1b420a8d800ec64982a9d09'
+b2sums=('333bad17d6e6ae06935b08e8715cc617f59c0fdbab52dd1026a16b1125c8e693482946dc46f5b6e1f7c24a3919ddc44a8dd39f045dcb3d2da8b8001c113f13c0'
+        'b4517a6cf6abb495af1df4884f66ffe79833fa8fe2cae08a00a88ee2ae508c3e68ce1f028faedf9dfcd0c8e687bbd7f9df5ed701417b9e23058f178256975f02'
         '165ab9dd8cedeaae5327accc1581c19cf0be55f923b03feb889cad3351b74c7c4cd3d3c206938e5152bfe1d947513dea8f630f8f5544099ec13d16d254725c40')
 b2sums_i486=('a60634d24ff4dc47ab8b2bab5d45a1a620443bef6999eccff15ae67dbf8353bc6c29c5078c7568cfa55aaf70bc7beb1912cb025aa2f189c1e182da37bd66a034'
              'fd19e3eb3e2210022aa6f83c021ec8482a734bceb164bb6949ebfdd57a0b8a34527684d415e231cd6e5dfb0d5cfcb352b296cabeb51721e5ea4526f17a115ef2'
